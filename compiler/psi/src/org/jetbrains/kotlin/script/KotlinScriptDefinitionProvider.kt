@@ -22,6 +22,7 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
@@ -40,6 +41,11 @@ interface ScriptDefinitionProvider {
         fun getInstance(project: Project): ScriptDefinitionProvider =
             ServiceManager.getService(project, ScriptDefinitionProvider::class.java)
     }
+}
+
+fun findScriptDefinition(psiFile: PsiFile): KotlinScriptDefinition? {
+    val virtualFile = psiFile.virtualFile ?: psiFile.originalFile.virtualFile ?: return null
+    return findScriptDefinition(virtualFile, psiFile.project)
 }
 
 fun findScriptDefinition(file: VirtualFile, project: Project): KotlinScriptDefinition? {
