@@ -285,21 +285,18 @@ abstract class GradleImportingTestCase : ExternalSystemImportingTestCase() {
             return File(PathUtil.getJarPathForClass(GradleWrapperMain::class.java))
         }
 
-        private var persistedLoggerFactory : Logger.Factory? = null
+        private var logSaver: GradleImportingTestLogSaver? = null
 
         @JvmStatic
         @BeforeClass
         fun setLoggerFactory() {
-            persistedLoggerFactory = Logger.getFactory()
-            Logger.setFactory(TestLoggerFactory::class.java)
+            logSaver = GradleImportingTestLogSaver()
         }
 
         @JvmStatic
         @AfterClass
         fun restoreLoggerFactory() {
-            if (persistedLoggerFactory != null) {
-                Logger.setFactory(persistedLoggerFactory)
-            }
+            logSaver?.restore()
         }
     }
 }

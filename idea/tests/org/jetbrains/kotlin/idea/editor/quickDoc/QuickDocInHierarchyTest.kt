@@ -29,14 +29,38 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.MapDataContext
 import junit.framework.TestCase
-import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.KotlinQuickDocumentationProvider
-import org.jetbrains.kotlin.idea.hierarchy.KotlinTypeHierarchyProvider
 import org.jetbrains.kotlin.idea.test.PluginTestCaseBase
+import java.util.*
 
 class QuickDocInHierarchyTest() : CodeInsightTestCase() {
     override fun getTestDataPath(): String {
         return PluginTestCaseBase.getTestDataPathBase() + "/kdoc/inTypeHierarchy/"
+    }
+
+    fun list(classLoader: ClassLoader): Set<String> {
+        var clClass: Class<*> = classLoader.javaClass
+        while (clClass.name != java.lang.ClassLoader::class.java.name) {
+            clClass = clClass.superclass
+        }
+        var classLoaderClassesField = clClass.getDeclaredField("classes");
+        classLoaderClassesField.isAccessible = true
+        var classes = classLoaderClassesField.get(classLoader) as Vector<*>
+        val result = TreeSet<String>()
+        val iterator = classes.iterator()
+        while (iterator.hasNext()) {
+            val className = iterator.next()?.toString()
+            result.add(if (className == null) "null" else className)
+        }
+        return result
+    }
+
+    fun testPrintLoadedClasses() {
+        val classes = list(this.javaClass.classLoader)
+        println("**** - Total amount of loaded classes: ${classes.size}")
+        for (clazz in classes) {
+            println("**** --- $clazz")
+        }
     }
 
     fun testSimple() {
