@@ -1027,7 +1027,7 @@ object ArrayOps : TemplateGroupBase() {
 
 
     val f_asList = fn("asList()") {
-        include(ArraysOfObjects, ArraysOfPrimitives)
+        include(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc { "Returns a [List] that wraps the original array." }
         returns("List<T>")
@@ -1048,7 +1048,7 @@ object ArrayOps : TemplateGroupBase() {
                             override fun lastIndexOf(element: T): Int = this@asList.lastIndexOf(element)
                         }
                         """
-        specialFor(ArraysOfPrimitives) {
+        specialFor(ArraysOfPrimitives, ArraysOfUnsigned) {
             on(Platform.JVM) {
                 body { objectLiteralImpl }
             }
