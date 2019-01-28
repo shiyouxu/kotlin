@@ -15,6 +15,10 @@ object Aggregates : TemplateGroupBase() {
             if (sequenceClassification.isEmpty()) {
                 sequenceClassification(terminal)
             }
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
         }
     }
 
@@ -465,6 +469,7 @@ object Aggregates : TemplateGroupBase() {
     val f_foldIndexed = fn("foldIndexed(initial: R, operation: (index: Int, acc: R, T) -> R)") {
         includeDefault()
         include(CharSequences)
+        include(ArraysOfUnsigned)
     } builder {
         inline()
         doc {
@@ -486,10 +491,21 @@ object Aggregates : TemplateGroupBase() {
             return accumulator
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            var index = 0
+            var accumulator = initial
+            while (index < size) {
+                accumulator = operation(index, accumulator, get(index))
+                index++
+            }
+            return accumulator
+            """
+        }
     }
 
     val f_foldRightIndexed = fn("foldRightIndexed(initial: R, operation: (index: Int, T, acc: R) -> R)") {
-        include(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives)
+        include(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         inline()
         doc {
@@ -531,6 +547,7 @@ object Aggregates : TemplateGroupBase() {
     val f_fold = fn("fold(initial: R, operation: (acc: R, T) -> R)") {
         includeDefault()
         include(CharSequences)
+        include(ArraysOfUnsigned)
     } builder {
         inline()
         doc { "Accumulates value starting with [initial] value and applying [operation] from left to right to current accumulator value and each ${f.element}." }
@@ -543,10 +560,18 @@ object Aggregates : TemplateGroupBase() {
             return accumulator
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            var index = 0
+            var accumulator = initial
+            while (index < size) accumulator = operation(accumulator, get(index++))
+            return accumulator
+            """
+        }
     }
 
     val f_foldRight = fn("foldRight(initial: R, operation: (T, acc: R) -> R)") {
-        include(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives)
+        include(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         inline()
 

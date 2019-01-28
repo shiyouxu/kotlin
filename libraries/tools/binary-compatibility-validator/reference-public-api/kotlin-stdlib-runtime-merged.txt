@@ -2290,6 +2290,26 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun contentToString-GBYM_sE ([B)Ljava/lang/String;
 	public static final fun contentToString-QwZRm1k ([J)Ljava/lang/String;
 	public static final fun contentToString-rL5Bavg ([S)Ljava/lang/String;
+	public static final fun fold-A8wKCXQ ([JLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun fold-yXmHNn8 ([BLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun fold-zi1B2BA ([ILjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun fold-zww5nb8 ([SLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun foldIndexed-3iWJZGE ([BLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldIndexed-bzxtMww ([SLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldIndexed-mwnnOCs ([JLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldIndexed-yVwIW0Q ([ILjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldRight-A8wKCXQ ([JLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun foldRight-yXmHNn8 ([BLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun foldRight-zi1B2BA ([ILjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun foldRight-zww5nb8 ([SLjava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun foldRightIndexed-3iWJZGE ([BLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldRightIndexed-bzxtMww ([SLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldRightIndexed-mwnnOCs ([JLjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun foldRightIndexed-yVwIW0Q ([ILjava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
+	public static final fun getLastIndex--ajY-9A ([I)I
+	public static final fun getLastIndex-GBYM_sE ([B)I
+	public static final fun getLastIndex-QwZRm1k ([J)I
+	public static final fun getLastIndex-rL5Bavg ([S)I
 	public static final fun random-2D5oskM ([ILkotlin/random/Random;)I
 	public static final fun random-JzugnMA ([JLkotlin/random/Random;)J
 	public static final fun random-oSF2wD8 ([BLkotlin/random/Random;)B

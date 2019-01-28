@@ -576,6 +576,38 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
 }
 
 /**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UIntArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val ULongArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UByteArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UShortArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
  * Returns an array of type [ByteArray], which is a copy of this array where each element is a signed reinterpretation
  * of the corresponding element of this array.
  */
@@ -697,5 +729,253 @@ public inline fun LongArray.toULongArray(): ULongArray {
 @kotlin.internal.InlineOnly
 public inline fun ShortArray.toUShortArray(): UShortArray {
     return UShortArray(this.copyOf())
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right to current accumulator value and each element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UIntArray.fold(initial: R, operation: (acc: R, UInt) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) accumulator = operation(accumulator, get(index++))
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right to current accumulator value and each element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> ULongArray.fold(initial: R, operation: (acc: R, ULong) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) accumulator = operation(accumulator, get(index++))
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right to current accumulator value and each element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UByteArray.fold(initial: R, operation: (acc: R, UByte) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) accumulator = operation(accumulator, get(index++))
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right to current accumulator value and each element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UShortArray.fold(initial: R, operation: (acc: R, UShort) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) accumulator = operation(accumulator, get(index++))
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original array.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UIntArray.foldIndexed(initial: R, operation: (index: Int, acc: R, UInt) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) {
+        accumulator = operation(index, accumulator, get(index))
+        index++
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original array.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> ULongArray.foldIndexed(initial: R, operation: (index: Int, acc: R, ULong) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) {
+        accumulator = operation(index, accumulator, get(index))
+        index++
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original array.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UByteArray.foldIndexed(initial: R, operation: (index: Int, acc: R, UByte) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) {
+        accumulator = operation(index, accumulator, get(index))
+        index++
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original array.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UShortArray.foldIndexed(initial: R, operation: (index: Int, acc: R, UShort) -> R): R {
+    var index = 0
+    var accumulator = initial
+    while (index < size) {
+        accumulator = operation(index, accumulator, get(index))
+        index++
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left to each element and current accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UIntArray.foldRight(initial: R, operation: (UInt, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(get(index--), accumulator)
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left to each element and current accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> ULongArray.foldRight(initial: R, operation: (ULong, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(get(index--), accumulator)
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left to each element and current accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UByteArray.foldRight(initial: R, operation: (UByte, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(get(index--), accumulator)
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left to each element and current accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UShortArray.foldRight(initial: R, operation: (UShort, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(get(index--), accumulator)
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left
+ * to each element with its index in the original array and current accumulator value.
+ * @param [operation] function that takes the index of an element, the element itself
+ * and current accumulator value, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UIntArray.foldRightIndexed(initial: R, operation: (index: Int, UInt, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(index, get(index), accumulator)
+        --index
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left
+ * to each element with its index in the original array and current accumulator value.
+ * @param [operation] function that takes the index of an element, the element itself
+ * and current accumulator value, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> ULongArray.foldRightIndexed(initial: R, operation: (index: Int, ULong, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(index, get(index), accumulator)
+        --index
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left
+ * to each element with its index in the original array and current accumulator value.
+ * @param [operation] function that takes the index of an element, the element itself
+ * and current accumulator value, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UByteArray.foldRightIndexed(initial: R, operation: (index: Int, UByte, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(index, get(index), accumulator)
+        --index
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from right to left
+ * to each element with its index in the original array and current accumulator value.
+ * @param [operation] function that takes the index of an element, the element itself
+ * and current accumulator value, and calculates the next accumulator value.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun <R> UShortArray.foldRightIndexed(initial: R, operation: (index: Int, UShort, acc: R) -> R): R {
+    var index = lastIndex
+    var accumulator = initial
+    while (index >= 0) {
+        accumulator = operation(index, get(index), accumulator)
+        --index
+    }
+    return accumulator
 }
 
