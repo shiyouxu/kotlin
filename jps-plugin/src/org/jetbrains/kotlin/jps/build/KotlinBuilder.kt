@@ -661,6 +661,10 @@ private class JpsICReporter : ICReporter {
             KotlinBuilder.LOG.debug(message())
         }
     }
+
+    override fun reportVerbose(message: () -> String) {
+        report(message)
+    }
 }
 
 private fun ChangesCollector.processChangesUsingLookups(
