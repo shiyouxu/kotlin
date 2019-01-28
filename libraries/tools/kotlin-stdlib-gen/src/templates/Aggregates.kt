@@ -15,6 +15,10 @@ object Aggregates : TemplateGroupBase() {
             if (sequenceClassification.isEmpty()) {
                 sequenceClassification(terminal)
             }
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
         }
     }
 
@@ -240,6 +244,7 @@ object Aggregates : TemplateGroupBase() {
                 include(Sequences, genericSpecializations)
                 include(ArraysOfObjects, genericSpecializations)
                 include(ArraysOfPrimitives, PrimitiveType.defaultPrimitives - PrimitiveType.Boolean)
+                include(ArraysOfUnsigned)
                 include(CharSequences)
             } builder {
                 val isFloat = primitive?.isFloatingPoint() == true
@@ -285,6 +290,28 @@ object Aggregates : TemplateGroupBase() {
                     return $op
                     """
                 }
+                specialFor(ArraysOfUnsigned) {
+                    val uintComparision = listOf(
+                        PrimitiveType.UByte,
+                        PrimitiveType.UShort,
+                        PrimitiveType.UInt
+                    )
+                    val comparisionFunction = if (primitive in uintComparision) "uintCompare" else "ulongCompare"
+                    val shouldConvertToInt = primitive in uintComparision && primitive != PrimitiveType.UInt
+                    val conversionFunction = if (shouldConvertToInt) ".toInt()" else ""
+                    body {
+                        """
+                        if (isEmpty()) return null
+                        var $op = storage[0]$conversionFunction
+
+                        for (i in 1..lastIndex) {
+                            val e = storage[i]$conversionFunction
+                            if ($comparisionFunction($op, e) ${if (op == "max") "<" else ">"} 0) $op = e
+                        }
+                        return $op.to${primitive!!.name.capitalize()}()
+                        """
+                    }
+                }
                 body {
                     body!!.replace(Regex("""^\s+\\\n""", RegexOption.MULTILINE), "") // remove empty lines ending with \
                 }
@@ -294,7 +321,7 @@ object Aggregates : TemplateGroupBase() {
 
     val f_minBy = fn("minBy(selector: (T) -> R)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
         doc { "Returns the first ${f.element} yielding the smallest value of the given function or `null` if there are no ${f.element.pluralize()}." }
@@ -319,7 +346,7 @@ object Aggregates : TemplateGroupBase() {
             return minElem
             """
         }
-        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives) {
+        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             if (isEmpty()) return null
 
@@ -343,7 +370,7 @@ object Aggregates : TemplateGroupBase() {
 
     val f_minWith = fn("minWith(comparator: Comparator<in T>)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         doc { "Returns the first ${f.element} having the smallest value according to the provided [comparator] or `null` if there are no ${f.element.pluralize()}." }
         returns("T?")
@@ -360,7 +387,7 @@ object Aggregates : TemplateGroupBase() {
             return min
             """
         }
-        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives) {
+        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             if (isEmpty()) return null
             var min = this[0]
@@ -376,7 +403,7 @@ object Aggregates : TemplateGroupBase() {
 
     val f_maxBy = fn("maxBy(selector: (T) -> R)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -402,7 +429,7 @@ object Aggregates : TemplateGroupBase() {
             return maxElem
             """
         }
-        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives) {
+        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             if (isEmpty()) return null
 
@@ -427,7 +454,7 @@ object Aggregates : TemplateGroupBase() {
 
     val f_maxWith = fn("maxWith(comparator: Comparator<in T>)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         doc { "Returns the first ${f.element} having the largest value according to the provided [comparator] or `null` if there are no ${f.element.pluralize()}." }
         returns("T?")
@@ -444,7 +471,7 @@ object Aggregates : TemplateGroupBase() {
         return max
         """
         }
-        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives) {
+        body(CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             if (isEmpty()) return null
 
@@ -578,7 +605,7 @@ object Aggregates : TemplateGroupBase() {
     }
 
     val f_reduceIndexed = fn("reduceIndexed(operation: (index: Int, acc: T, T) -> T)") {
-        include(ArraysOfPrimitives, CharSequences)
+        include(ArraysOfPrimitives, ArraysOfUnsigned, CharSequences)
     } builder {
         inline()
 
@@ -650,7 +677,7 @@ object Aggregates : TemplateGroupBase() {
     }
 
     val f_reduceRightIndexed = fn("reduceRightIndexed(operation: (index: Int, T, acc: T) -> T)") {
-        include(CharSequences, ArraysOfPrimitives)
+        include(CharSequences, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -727,7 +754,7 @@ object Aggregates : TemplateGroupBase() {
     }
 
     val f_reduce = fn("reduce(operation: (acc: T, T) -> T)") {
-        include(ArraysOfPrimitives, CharSequences)
+        include(ArraysOfPrimitives, ArraysOfUnsigned, CharSequences)
     } builder {
         inline()
 
@@ -783,7 +810,7 @@ object Aggregates : TemplateGroupBase() {
     }
 
     val f_reduceRight = fn("reduceRight(operation: (T, acc: T) -> T)") {
-        include(CharSequences, ArraysOfPrimitives)
+        include(CharSequences, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -849,7 +876,7 @@ object Aggregates : TemplateGroupBase() {
         specialFor(Iterables, Maps, CharSequences) {
             inline()
             doc { "Performs the given [action] on each ${f.element} and returns the ${f.collection} itself afterwards." }
-            val collectionType = when(f) {
+            val collectionType = when (f) {
                 Maps -> "M"
                 CharSequences -> "S"
                 else -> "C"
@@ -878,7 +905,7 @@ object Aggregates : TemplateGroupBase() {
 
     val f_forEach = fn("forEach(action: (T) -> Unit)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -890,11 +917,16 @@ object Aggregates : TemplateGroupBase() {
             for (element in this) action(element)
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            for (index in 0..lastIndex) action(get(index))
+            """
+        }
     }
 
     val f_forEachIndexed = fn("forEachIndexed(action: (index: Int, T) -> Unit)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
         doc {
@@ -909,6 +941,11 @@ object Aggregates : TemplateGroupBase() {
             """
             var index = 0
             for (item in this) action(${checkOverflow("index++")}, item)
+            """
+        }
+        body(ArraysOfUnsigned) {
+            """
+            for (index in 0..lastIndex) action(index, get(index))
             """
         }
     }
