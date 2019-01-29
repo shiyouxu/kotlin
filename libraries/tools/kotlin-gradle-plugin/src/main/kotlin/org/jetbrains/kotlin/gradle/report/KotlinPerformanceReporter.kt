@@ -25,7 +25,6 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
     private val taskStartNs = HashMap<Task, Long>()
     private val kotlinTaskTimeNs = HashMap<Task, Long>()
     private val tasksSb = StringBuilder()
-    private val overviewSb = StringBuilder()
 
     @Volatile
     private var allTasksTimeNs: Long = 0L
@@ -71,10 +70,23 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
 
     @Synchronized
     override fun buildFinished(result: BuildResult) {
+        taskOverview()
+
+        val logger = result.gradle?.rootProject?.logger
+        try {
+            perfReportFile.writeText(taskOverview() + tasksSb.toString())
+            logger?.lifecycle("Kotlin performance report is written to ${perfReportFile.canonicalPath}")
+        } catch (e: Throwable) {
+            logger?.error("Could not write Kotlin performance report to ${perfReportFile.canonicalPath}", e)
+        }
+    }
+
+    private fun taskOverview(): String {
+        val sb = StringBuilder()
         val kotlinTotalTimeNs = kotlinTaskTimeNs.values.sum()
         val ktTaskPercent = (kotlinTotalTimeNs.toDouble() / allTasksTimeNs * 100).asString(1)
 
-        overviewSb.appendln("Total execution time for Kotlin tasks: ${formatTime(kotlinTotalTimeNs)} ($ktTaskPercent % of all tasks time)")
+        sb.appendln("Total execution time for Kotlin tasks: ${formatTime(kotlinTotalTimeNs)} ($ktTaskPercent % of all tasks time)")
 
         val table = TextTable("Time", "% of Kotlin time", "Task")
         kotlinTaskTimeNs.entries
@@ -83,16 +95,9 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
                 val percent = (timeNs.toDouble() / kotlinTotalTimeNs * 100).asString(1)
                 table.addRow(formatTime(timeNs), "$percent %", task.path)
             }
-        table.printTo(overviewSb)
-        overviewSb.appendln()
-
-        val logger = result.gradle?.rootProject?.logger
-        try {
-            perfReportFile.writeText(overviewSb.toString() + tasksSb.toString())
-            logger?.lifecycle("Kotlin performance report is written to ${perfReportFile.canonicalPath}")
-        } catch (e: Throwable) {
-            logger?.error("Could not write Kotlin performance report to ${perfReportFile.canonicalPath}", e)
-        }
+        table.printTo(sb)
+        sb.appendln()
+        return sb.toString()
     }
 
     private fun formatTime(ns: Long): String {
