@@ -2290,6 +2290,30 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun contentToString-GBYM_sE ([B)Ljava/lang/String;
 	public static final fun contentToString-QwZRm1k ([J)Ljava/lang/String;
 	public static final fun contentToString-rL5Bavg ([S)Ljava/lang/String;
+	public static final fun getIndices--ajY-9A ([I)Lkotlin/ranges/IntRange;
+	public static final fun getIndices-GBYM_sE ([B)Lkotlin/ranges/IntRange;
+	public static final fun getIndices-QwZRm1k ([J)Lkotlin/ranges/IntRange;
+	public static final fun getIndices-rL5Bavg ([S)Lkotlin/ranges/IntRange;
+	public static final fun getLastIndex--ajY-9A ([I)I
+	public static final fun getLastIndex-GBYM_sE ([B)I
+	public static final fun getLastIndex-QwZRm1k ([J)I
+	public static final fun getLastIndex-rL5Bavg ([S)I
+	public static final fun indexOf-3uqUaXg ([JJ)I
+	public static final fun indexOf-XzdR7RA ([SS)I
+	public static final fun indexOf-gMuBH34 ([BB)I
+	public static final fun indexOf-uWY9BYg ([II)I
+	public static final fun indexOfFirst-JOV_ifY ([BLkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfFirst-MShoTSo ([JLkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfFirst-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfFirst-xTcfx_M ([SLkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfLast-JOV_ifY ([BLkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfLast-MShoTSo ([JLkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfLast-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)I
+	public static final fun indexOfLast-xTcfx_M ([SLkotlin/jvm/functions/Function1;)I
+	public static final fun lastIndexOf-3uqUaXg ([JJ)I
+	public static final fun lastIndexOf-XzdR7RA ([SS)I
+	public static final fun lastIndexOf-gMuBH34 ([BB)I
+	public static final fun lastIndexOf-uWY9BYg ([II)I
 	public static final fun random-2D5oskM ([ILkotlin/random/Random;)I
 	public static final fun random-JzugnMA ([JLkotlin/random/Random;)J
 	public static final fun random-oSF2wD8 ([BLkotlin/random/Random;)B

@@ -16,6 +16,230 @@ package kotlin.collections
 import kotlin.random.*
 
 /**
+ * Returns first index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UIntArray.indexOf(element: UInt): Int {
+    for (index in indices) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns first index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun ULongArray.indexOf(element: ULong): Int {
+    for (index in indices) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns first index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UByteArray.indexOf(element: UByte): Int {
+    for (index in indices) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns first index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UShortArray.indexOf(element: UShort): Int {
+    for (index in indices) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the first element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.indexOfFirst(predicate: (UInt) -> Boolean): Int {
+    for (index in indices) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the first element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.indexOfFirst(predicate: (ULong) -> Boolean): Int {
+    for (index in indices) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the first element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.indexOfFirst(predicate: (UByte) -> Boolean): Int {
+    for (index in indices) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the first element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.indexOfFirst(predicate: (UShort) -> Boolean): Int {
+    for (index in indices) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the last element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.indexOfLast(predicate: (UInt) -> Boolean): Int {
+    for (index in indices.reversed()) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the last element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.indexOfLast(predicate: (ULong) -> Boolean): Int {
+    for (index in indices.reversed()) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the last element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.indexOfLast(predicate: (UByte) -> Boolean): Int {
+    for (index in indices.reversed()) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns index of the last element matching the given [predicate], or -1 if the array does not contain such element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.indexOfLast(predicate: (UShort) -> Boolean): Int {
+    for (index in indices.reversed()) {
+        if (predicate(this[index])) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns last index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UIntArray.lastIndexOf(element: UInt): Int {
+    for (index in indices.reversed()) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns last index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun ULongArray.lastIndexOf(element: ULong): Int {
+    for (index in indices.reversed()) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns last index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UByteArray.lastIndexOf(element: UByte): Int {
+    for (index in indices.reversed()) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
+ * Returns last index of [element], or -1 if the array does not contain element.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UShortArray.lastIndexOf(element: UShort): Int {
+    for (index in indices.reversed()) {
+        if (element == this[index]) {
+            return index
+        }
+    }
+    return -1
+}
+
+/**
  * Returns a random element from this array.
  * 
  * @throws NoSuchElementException if this array is empty.
@@ -574,6 +798,70 @@ public inline fun UByteArray.copyOfRange(fromIndex: Int, toIndex: Int): UByteArr
 public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortArray {
     return UShortArray(storage.copyOfRange(fromIndex, toIndex))
 }
+
+/**
+ * Returns the range of valid indices for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UIntArray.indices: IntRange
+    get() = storage.indices
+
+/**
+ * Returns the range of valid indices for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val ULongArray.indices: IntRange
+    get() = storage.indices
+
+/**
+ * Returns the range of valid indices for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UByteArray.indices: IntRange
+    get() = storage.indices
+
+/**
+ * Returns the range of valid indices for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UShortArray.indices: IntRange
+    get() = storage.indices
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UIntArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val ULongArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UByteArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UShortArray.lastIndex: Int
+    get() = storage.lastIndex
 
 /**
  * Returns an array of type [ByteArray], which is a copy of this array where each element is a signed reinterpretation
