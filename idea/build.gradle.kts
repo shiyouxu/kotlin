@@ -205,6 +205,4 @@ projectTest(taskName = "performanceTest") {
 
 testsJar {}
 
-classesDirsArtifact()
 configureFormInstrumentation()
-
