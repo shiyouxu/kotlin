@@ -355,10 +355,6 @@ allprojects {
         enabled = false
     }
 
-    task<Jar>("javadocJar") {
-        classifier = "javadoc"
-    }
-
     tasks.withType<Jar> {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
