@@ -2290,6 +2290,50 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun contentToString-GBYM_sE ([B)Ljava/lang/String;
 	public static final fun contentToString-QwZRm1k ([J)Ljava/lang/String;
 	public static final fun contentToString-rL5Bavg ([S)Ljava/lang/String;
+	public static final fun flatMap-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun flatMap-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun flatMap-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun flatMap-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun flatMapTo-HqK1JgA ([JLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun flatMapTo-oEOeDjA ([SLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun flatMapTo-wU5IKMo ([ILjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun flatMapTo-wzUQCXU ([BLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun getLastIndex--ajY-9A ([I)I
+	public static final fun getLastIndex-GBYM_sE ([B)I
+	public static final fun getLastIndex-QwZRm1k ([J)I
+	public static final fun getLastIndex-rL5Bavg ([S)I
+	public static final fun groupBy--_j2Y-Q ([JLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-3bBvP4M ([SLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-L4rlFek ([ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-bBsjw1Y ([BLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupBy-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-4D70W2E ([ILjava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-H21X9dk ([BLjava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-JM6gNCM ([ILjava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-QxgOkWg ([JLjava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-X6OPwNk ([JLjava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-ciTST-8 ([SLjava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-q8RuPII ([SLjava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun groupByTo-qOZmbk8 ([BLjava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun map-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun map-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun map-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun map-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun mapIndexed-ELGow60 ([BLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun mapIndexed-WyvcNBI ([ILkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun mapIndexed-s8dVfGU ([JLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun mapIndexed-xzaTVY8 ([SLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun mapIndexedTo--6EtJGI ([ILjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun mapIndexedTo-QqktQ3k ([SLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun mapIndexedTo-eNpIKz8 ([BLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun mapIndexedTo-pe2Q0Dw ([JLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun mapTo-HqK1JgA ([JLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun mapTo-oEOeDjA ([SLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun mapTo-wU5IKMo ([ILjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun mapTo-wzUQCXU ([BLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
 	public static final fun random-2D5oskM ([ILkotlin/random/Random;)I
 	public static final fun random-JzugnMA ([JLkotlin/random/Random;)J
 	public static final fun random-oSF2wD8 ([BLkotlin/random/Random;)B
@@ -2298,6 +2342,34 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;
 	public static final fun toTypedArray-rL5Bavg ([S)[Lkotlin/UShort;
+	public static final fun withIndex--ajY-9A ([I)Ljava/lang/Iterable;
+	public static final fun withIndex-GBYM_sE ([B)Ljava/lang/Iterable;
+	public static final fun withIndex-QwZRm1k ([J)Ljava/lang/Iterable;
+	public static final fun withIndex-rL5Bavg ([S)Ljava/lang/Iterable;
+	public static final fun zip-7znnbtw ([ILjava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-8LME4QE ([J[Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-C-E_24M ([I[Ljava/lang/Object;)Ljava/util/List;
+	public static final fun zip-F7u83W8 ([JLjava/lang/Iterable;)Ljava/util/List;
+	public static final fun zip-HwE9HBo ([ILjava/lang/Iterable;)Ljava/util/List;
+	public static final fun zip-JAKpvQM ([B[BLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-JGPC0-M ([SLjava/lang/Iterable;)Ljava/util/List;
+	public static final fun zip-JQknh5Q ([BLjava/lang/Iterable;)Ljava/util/List;
+	public static final fun zip-L83TJbI ([I[ILkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-LuipOMY ([B[Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-PabeH-Q ([J[JLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-TUPTUsU ([JLjava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-UCnP4_w ([BLjava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-ZjwqOic ([I[Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-ctEhBpI ([I[I)Ljava/util/List;
+	public static final fun zip-ePBmRWY ([S[Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-f7H3mmw ([J[Ljava/lang/Object;)Ljava/util/List;
+	public static final fun zip-gVVukQo ([S[SLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-kBb4a-s ([SLjava/lang/Iterable;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun zip-kdPth3s ([B[B)Ljava/util/List;
+	public static final fun zip-mazbYpA ([S[S)Ljava/util/List;
+	public static final fun zip-nl983wc ([B[Ljava/lang/Object;)Ljava/util/List;
+	public static final fun zip-uaTIQ5s ([S[Ljava/lang/Object;)Ljava/util/List;
+	public static final fun zip-us8wMrg ([J[J)Ljava/util/List;
 }
 
 public abstract class kotlin/collections/UByteIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {

@@ -10,6 +10,15 @@ import templates.SequenceClass.*
 
 object Generators : TemplateGroupBase() {
 
+    init {
+        defaultBuilder {
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
+        }
+    }
+
     val f_plusElement = fn("plusElement(element: T)") {
         include(Iterables, Collections, Sets, Sequences)
     } builder {
@@ -993,7 +1002,7 @@ object Generators : TemplateGroupBase() {
     }
 
     val f_zip_transform = fn("zip(other: Iterable<R>, transform: (a: T, b: R) -> V)") {
-        include(Iterables, ArraysOfObjects, ArraysOfPrimitives)
+        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc {
             """
@@ -1018,7 +1027,7 @@ object Generators : TemplateGroupBase() {
             return list
             """
         }
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             val arraySize = size
             val list = ArrayList<V>(minOf(other.collectionSizeOrDefault(10), arraySize))
@@ -1033,7 +1042,7 @@ object Generators : TemplateGroupBase() {
     }
 
     val f_zip_array_transform = fn("zip(other: Array<out R>, transform: (a: T, b: R) -> V)") {
-        include(Iterables, ArraysOfObjects, ArraysOfPrimitives)
+        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc {
             """
@@ -1059,7 +1068,7 @@ object Generators : TemplateGroupBase() {
             return list
             """
         }
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             val size = minOf(size, other.size)
             val list = ArrayList<V>(size)
@@ -1073,7 +1082,7 @@ object Generators : TemplateGroupBase() {
     }
 
     val f_zip_sameArray_transform = fn("zip(other: SELF, transform: (a: T, b: T) -> V)") {
-        include(ArraysOfPrimitives)
+        include(ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc {
             """
@@ -1149,7 +1158,7 @@ object Generators : TemplateGroupBase() {
 
 
     val f_zip = fn("zip(other: Iterable<R>)") {
-        include(Iterables, ArraysOfObjects, ArraysOfPrimitives)
+        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         infix(true)
         doc {
@@ -1188,7 +1197,7 @@ object Generators : TemplateGroupBase() {
     }
 
     val f_zip_array = fn("zip(other: Array<out R>)") {
-        include(Iterables, ArraysOfObjects, ArraysOfPrimitives)
+        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         infix(true)
         doc {
@@ -1208,7 +1217,7 @@ object Generators : TemplateGroupBase() {
     }
 
     val f_zip_sameArray = fn("zip(other: SELF)") {
-        include(ArraysOfPrimitives)
+        include(ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         infix(true)
         doc {
