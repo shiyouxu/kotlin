@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.gradle.plugin
 import org.gradle.BuildAdapter
 import org.gradle.BuildResult
 import org.gradle.api.invocation.Gradle
+import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.jetbrains.kotlin.compilerRunner.DELETED_SESSION_FILE_PREFIX
 import org.jetbrains.kotlin.compilerRunner.GradleCompilerRunner
@@ -59,6 +60,11 @@ internal class KotlinGradleBuildServices private constructor(
                 return instance!!
             }
 
+            PropertiesProvider(gradle.rootProject).perfReportDir?.let {
+                configurePerfReporter(gradle, it, log)
+                log.kotlinDebug { "Configured Kotlin performance reporter" }
+            }
+
             val services = KotlinGradleBuildServices(gradle)
             gradle.addBuildListener(services)
             instance = services
@@ -66,6 +72,25 @@ internal class KotlinGradleBuildServices private constructor(
 
             services.buildStarted()
             return services
+        }
+
+        private fun configurePerfReporter(gradle: Gradle, perfLogDir: File, log: Logger) {
+            if (perfLogDir.isFile) {
+                log.error("Kotlin performance report cannot be created: '$PERFORMANCE_REPORT_DIR_PROPERTY' is a file")
+            } else {
+                perfLogDir.mkdirs()
+                val ts = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().time)
+
+                val perfReportFile = perfLogDir.resolve("${gradle.rootProject.name}-build-$ts.txt")
+                val reporter = KotlinPerformanceReporter(gradle, perfReportFile)
+                gradle.addBuildListener(reporter)
+
+                gradle.taskGraph.whenReady { graph ->
+                    graph.allTasks.asSequence()
+                        .filterIsInstance<AbstractKotlinCompile<*>>()
+                        .forEach { it.reportExecutionResult = true }
+                }
+            }
         }
     }
 
@@ -80,11 +105,6 @@ internal class KotlinGradleBuildServices private constructor(
 
         TaskLoggers.clear()
         TaskExecutionResults.clear()
-
-        PropertiesProvider(gradle.rootProject).perfReportDir?.let {
-            configurePerfReporter(it)
-            log.kotlinDebug { "Configured Kotlin performance reporter" }
-        }
     }
 
     override fun buildFinished(result: BuildResult) {
@@ -122,25 +142,6 @@ internal class KotlinGradleBuildServices private constructor(
         gradle.removeListener(this)
         instance = null
         log.kotlinDebug(DISPOSE_MESSAGE)
-    }
-
-    private fun configurePerfReporter(perfLogDir: File) {
-        if (perfLogDir.isFile) {
-            log.error("Kotlin performance report cannot be created: '$PERFORMANCE_REPORT_DIR_PROPERTY' is a file")
-        } else {
-            perfLogDir.mkdirs()
-            val ts = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().time)
-
-            val perfReportFile = perfLogDir.resolve("${gradle.rootProject.name}-build-$ts.txt")
-            val reporter = KotlinPerformanceReporter(perfReportFile)
-            gradle.addBuildListener(reporter)
-
-            gradle.taskGraph.whenReady { graph ->
-                graph.allTasks.asSequence()
-                    .filterIsInstance<AbstractKotlinCompile<*>>()
-                    .forEach { it.reportExecutionResult = true }
-            }
-        }
     }
 
     private fun getUsedMemoryKb(): Long? {

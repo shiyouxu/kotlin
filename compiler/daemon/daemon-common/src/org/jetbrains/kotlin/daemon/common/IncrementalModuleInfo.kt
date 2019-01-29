@@ -5,11 +5,12 @@
 
 package org.jetbrains.kotlin.daemon.common
 
+import org.jetbrains.kotlin.utils.addToStdlib.flattenTo
 import java.io.File
 import java.io.Serializable
 
 data class IncrementalModuleEntry(
-    private val projectPath: String,
+    val projectPath: String,
     val name: String,
     val buildDir: File,
     val buildHistoryFile: File
@@ -27,6 +28,13 @@ class IncrementalModuleInfo(
     // only for js
     val jarToModule: Map<File, IncrementalModuleEntry>
 ) : Serializable {
+    fun allModulesToFiles(): Map<IncrementalModuleEntry, Set<File>> =
+        HashMap<IncrementalModuleEntry, MutableSet<File>>().apply {
+            for ((file, module) in dirToModule.asSequence() + jarToModule.asSequence()) {
+                getOrPut(module) { HashSet() }.add(file)
+            }
+        }
+
     companion object {
         private const val serialVersionUID = 0L
     }

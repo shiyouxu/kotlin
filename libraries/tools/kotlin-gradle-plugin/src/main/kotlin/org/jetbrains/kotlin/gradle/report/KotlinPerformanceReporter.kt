@@ -9,13 +9,18 @@ import org.gradle.BuildAdapter
 import org.gradle.BuildResult
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
+import org.jetbrains.kotlin.compilerRunner.GradleCompilerRunner
 import org.jetbrains.kotlin.gradle.plugin.internal.state.TaskExecutionResults
 import java.io.File
 import java.lang.StringBuilder
 import kotlin.math.max
 
-internal class KotlinPerformanceReporter(private val perfReportFile: File) : BuildAdapter(), TaskExecutionListener {
+internal class KotlinPerformanceReporter(
+    private val gradle: Gradle,
+    private val perfReportFile: File
+) : BuildAdapter(), TaskExecutionListener {
     init {
         val dir = perfReportFile.parentFile
         check(dir.isDirectory) { "$dir does not exist or is a file" }
@@ -72,7 +77,7 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
     override fun buildFinished(result: BuildResult) {
         val logger = result.gradle?.rootProject?.logger
         try {
-            perfReportFile.writeText(taskOverview() + tasksSb.toString())
+            perfReportFile.writeText(taskOverview() + tasksSb.toString() + moduleInfo())
             logger?.lifecycle("Kotlin performance report is written to ${perfReportFile.canonicalPath}")
         } catch (e: Throwable) {
             logger?.error("Could not write Kotlin performance report to ${perfReportFile.canonicalPath}", e)
@@ -95,6 +100,23 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
             }
         table.printTo(sb)
         sb.appendln()
+        return sb.toString()
+    }
+
+    private fun moduleInfo(): String {
+        val sb = StringBuilder()
+
+        sb.appendln()
+        sb.appendln("Units of compilation:")
+
+        val modulesInfo = GradleCompilerRunner.buildModulesInfo(gradle)
+        modulesInfo.allModulesToFiles().forEach { (module, files) ->
+            sb.appendln("  '${module.projectPath}:${module.name}'")
+            sb.appendln("    build history: ${module.buildHistoryFile}")
+            sb.appendln("    build dir: ${module.buildDir}")
+            files.forEach { sb.appendln("      $it") }
+        }
+
         return sb.toString()
     }
 
