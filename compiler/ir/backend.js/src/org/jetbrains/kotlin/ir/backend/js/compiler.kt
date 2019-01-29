@@ -22,7 +22,10 @@ import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.*
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.metadata.*
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.descriptors.IrBuiltIns
+import org.jetbrains.kotlin.ir.util.ConstantValueGenerator
 import org.jetbrains.kotlin.ir.util.SymbolTable
+import org.jetbrains.kotlin.ir.util.TypeTranslator
 import org.jetbrains.kotlin.js.analyze.TopDownAnalyzerFacadeForJS
 import org.jetbrains.kotlin.js.resolve.JsPlatform
 import org.jetbrains.kotlin.name.FqName
@@ -158,6 +161,22 @@ fun compile(
 
         md.initialize(provider)
         md.setDependencies(listOf(md, md.builtIns.builtInsModule))
+
+        val st = SymbolTable()
+
+        val typeTranslator = TypeTranslator(st, configuration.languageVersionSettings).also {
+            it.constantValueGenerator = ConstantValueGenerator(md, st)
+        }
+
+        val deserializer = IrKlibProtoBufModuleDeserializer(
+            md,
+            context,
+            IrBuiltIns(md.builtIns, typeTranslator, st),
+            stdKlibDir,
+            st,
+            null
+        )
+        val deserializedModuleFragment = deserializer.deserializeIrModule(md, moduleFile.readBytes(), true)
 
         TODO("Implemenet IrSerialization")
     }
