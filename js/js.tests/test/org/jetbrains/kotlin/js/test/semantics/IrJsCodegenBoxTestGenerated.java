@@ -6092,6 +6092,11 @@ public class IrJsCodegenBoxTestGenerated extends AbstractIrJsCodegenBoxTest {
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/crossinline.kt", "kotlin.coroutines");
             }
 
+            @TestMetadata("doubleCrossinline.kt")
+            public void testDoubleCrossinline_1_3() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/doubleCrossinline.kt", "kotlin.coroutines");
+            }
+
             @TestMetadata("inlineWithStateMachine.kt")
             public void testInlineWithStateMachine_1_3() throws Exception {
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/inlineWithStateMachine.kt", "kotlin.coroutines");

@@ -7062,6 +7062,16 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/crossinline.kt", "kotlin.coroutines");
             }
 
+            @TestMetadata("doubleCrossinline.kt")
+            public void testDoubleCrossinline_1_2() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/doubleCrossinline.kt", "kotlin.coroutines.experimental");
+            }
+
+            @TestMetadata("doubleCrossinline.kt")
+            public void testDoubleCrossinline_1_3() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/doubleCrossinline.kt", "kotlin.coroutines");
+            }
+
             @TestMetadata("inlineWithStateMachine.kt")
             public void testInlineWithStateMachine_1_2() throws Exception {
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/inlineWithStateMachine.kt", "kotlin.coroutines.experimental");
