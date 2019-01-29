@@ -23,11 +23,13 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedCallableMemberDescriptor
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedClassDescriptor
+import java.io.File
 
 class IrKlibProtoBufModuleDeserializer(
     currentModule: ModuleDescriptor,
     logger: LoggingContext,
     builtIns: IrBuiltIns,
+    libraryDir: File,
     symbolTable: SymbolTable,
     val forwardModuleDescriptor: ModuleDescriptor?)
         : IrModuleDeserializer(logger, builtIns, symbolTable) {
@@ -44,8 +46,11 @@ class IrKlibProtoBufModuleDeserializer(
     val resolvedForwardDeclarations = mutableMapOf<UniqIdKey, UniqIdKey>()
     val descriptorReferenceDeserializer = DescriptorReferenceDeserializer(currentModule, resolvedForwardDeclarations)
 
+    val moduleRoot = libraryDir
+    val irDirectory = File(libraryDir, "ir/")
+
     init {
-        var currentIndex = 0L
+        var currentIndex = 0x1_0000_0000L
         builtIns.knownBuiltins.forEach {
             require(it is IrFunction)
             deserializedSymbols.put(UniqIdKey(null, UniqId(currentIndex, isLocal = false)), it.symbol)
@@ -172,11 +177,9 @@ class IrKlibProtoBufModuleDeserializer(
         return deserializeDeclaration(proto, reversedFileIndex[uniqIdKey]!!)
     }
 
-    private fun reader(moduleDescriptor: ModuleDescriptor, uniqId: UniqId): ByteArray = TODO() //moduleDescriptor.konanLibrary!!.irDeclaration(uniqId.index, uniqId.isLocal)
-
     private fun loadTopLevelDeclarationProto(uniqIdKey: UniqIdKey): IrKlibProtoBuf.IrDeclaration {
-        val stream = reader(uniqIdKey.moduleOfOrigin!!, uniqIdKey.uniqId).codedInputStream
-        return IrKlibProtoBuf.IrDeclaration.parseFrom(stream, JsKlibMetadataSerializerProtocol.extensionRegistry)
+        val file = File(irDirectory, uniqIdKey.uniqId.declarationFileName)
+        return IrKlibProtoBuf.IrDeclaration.parseFrom(file.readBytes(), JsKlibMetadataSerializerProtocol.extensionRegistry)
     }
 
     private fun findDeserializedDeclarationForDescriptor(descriptor: DeclarationDescriptor): DeclarationDescriptor? {

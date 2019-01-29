@@ -53,3 +53,5 @@ fun DeclarationDescriptor.getUniqId(): JsKlibMetadataProtoBuf.DescriptorUniqId? 
 
 fun newDescriptorUniqId(index: Long): JsKlibMetadataProtoBuf.DescriptorUniqId =
     JsKlibMetadataProtoBuf.DescriptorUniqId.newBuilder().setIndex(index).build()
+
+val UniqId.declarationFileName: String get() = "$index${if (isLocal) "L" else "G"}.kjd"

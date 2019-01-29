@@ -19,10 +19,7 @@ import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.incremental.components.LookupTracker
-import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.DeclarationTable
-import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.DescriptorTable
-import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.IrModuleSerializer
-import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.newDescriptorUniqId
+import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.*
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.metadata.*
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.util.SymbolTable
@@ -127,7 +124,7 @@ fun compile(
         val irDeclarationDir = File(stdKlibDir, "ir/").also { it.mkdir() }
 
         for ((id, data) in serializedIr.declarations) {
-            val file = File(irDeclarationDir, "${id.index}${if (id.isLocal) "L" else "G"}.kjd")
+            val file = File(irDeclarationDir, id.declarationFileName)
             file.writeBytes(data)
         }
 
