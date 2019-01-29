@@ -19,6 +19,10 @@ import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.incremental.components.LookupTracker
+import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.DeclarationTable
+import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.DescriptorTable
+import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.IrModuleSerializer
+import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.newDescriptorUniqId
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.metadata.*
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.util.SymbolTable
@@ -38,13 +42,6 @@ import org.jetbrains.kotlin.utils.KotlinJavascriptMetadataUtils
 import java.io.File
 
 data class Result(val moduleDescriptor: ModuleDescriptor, val generatedCode: String, val moduleFragment: IrModuleFragment)
-
-fun OutputFileCollection.writeAll(outputDir: File) {
-    for (file in asList()) {
-        val output = File(outputDir, file.relativePath)
-        FileUtil.writeToFile(output, file.asByteArray())
-    }
-}
 
 fun compile(
     project: Project,
@@ -89,8 +86,8 @@ fun compile(
     )
 
     if (isKlibCompilation) {
-//        val declarationTable = DeclarationTable(moduleFragment.irBuiltins, DescriptorTable())
-//        val serializedIr = IrModuleSerializer(context, declarationTable/*, onlyForInlines = false*/).serializedIrModule(moduleFragment)
+        val declarationTable = DeclarationTable(moduleFragment.irBuiltins, DescriptorTable())
+        val serializedIr = IrModuleSerializer(context, declarationTable/*, onlyForInlines = false*/).serializedIrModule(moduleFragment)
 //        val serializer = KonanSerializationUtil(context, configuration.get(CommonConfigurationKeys.METADATA_VERSION)!!, declarationTable)
 //        val serializedData = serializer.serializeModule(analysisResult.moduleDescriptor, serializedIr)
 //        buildLibrary(serializedData)
@@ -105,16 +102,15 @@ fun compile(
             ?: JsKlibMetadataVersion.INSTANCE
         val moduleDescription =
             JsKlibMetadataModuleDescriptor(moduleName, dependencies.map { it.name.asString() }, moduleFragment.descriptor)
-        var index = 0L
         val serializedData = serializer.serializeMetadata(
             psi2IrContext.bindingContext,
             moduleDescription,
             configuration.get(CommonConfigurationKeys.LANGUAGE_VERSION_SETTINGS)!!,
             metadataVersion
-        ) {
-//            val index = declarationTable.descriptorTable.get(it)
-//            index?.let { newDescriptorUniqId(it) }
-            JsKlibMetadataProtoBuf.DescriptorUniqId.newBuilder().setIndex(index++).build()
+        ) { declarationDescriptor ->
+            val index = declarationTable.descriptorTable.get(declarationDescriptor)
+            index?.let { newDescriptorUniqId(it) }
+//            JsKlibMetadataProtoBuf.DescriptorUniqId.newBuilder().setIndex(index++).build()
 
         }
 //        buildLibrary(serializedData)
@@ -125,25 +121,27 @@ fun compile(
             it.mkdirs()
         }
 //
-//        val moduleFile = File(stdKlibDir, "module.kji")
-//        moduleFile.writeBytes(serializedIr.module)
-//
-//        for ((id, data) in serializedIr.declarations) {
-//            val file = File(stdKlibDir, "${id.index}${if (id.isLocal) "L" else "G"}.kjd")
-//            file.writeBytes(data)
-//        }
-//
-//
-//        val debugFile = File(stdKlibDir, "debug.txt")
-//
-//        for ((id, data) in serializedIr.debugIndex) {
-//            debugFile.appendText(id.toString())
-//            debugFile.appendText(" --- ")
-//            debugFile.appendText(data)
-//            debugFile.appendText("\n")
-//        }
+        val moduleFile = File(stdKlibDir, "module.kji")
+        moduleFile.writeBytes(serializedIr.module)
 
-        val metadata = File(stdKlibDir, "${moduleDescription.name}${JsKlibMetadataSerializationUtil.CLASS_METADATA_FILE_EXTENSION}").also {
+        val irDeclarationDir = File(stdKlibDir, "ir/").also { it.mkdir() }
+
+        for ((id, data) in serializedIr.declarations) {
+            val file = File(irDeclarationDir, "${id.index}${if (id.isLocal) "L" else "G"}.kjd")
+            file.writeBytes(data)
+        }
+
+
+        val debugFile = File(stdKlibDir, "debug.txt")
+
+        for ((id, data) in serializedIr.debugIndex) {
+            debugFile.appendText(id.toString())
+            debugFile.appendText(" --- ")
+            debugFile.appendText(data)
+            debugFile.appendText("\n")
+        }
+
+        val metadata = File(stdKlibDir, "${moduleDescription.name}.${JsKlibMetadataSerializationUtil.CLASS_METADATA_FILE_EXTENSION}").also {
             it.writeBytes(serializedData.asByteArray())
         }
 

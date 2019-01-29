@@ -110,23 +110,28 @@ private fun acyclicTypeMangler(visited: MutableSet<IrTypeParameter>, type: IrTyp
         return "#GENERIC${if (type.isMarkedNullable()) "?" else ""}$upperBounds"
     }
 
-    var hashString = type.getClass()!!.fqNameSafe.asString()
-    if (type !is IrSimpleType) error(type)
-    if (!type.arguments.isEmpty()) {
-        hashString += "<${type.arguments.map {
-            when (it) {
-                is IrStarProjection -> "#STAR"
-                is IrTypeProjection -> {
-                    val variance = it.variance.label
-                    val projection = if (variance == "") "" else "${variance}_"
-                    projection + acyclicTypeMangler(visited, it.type)
-                }
-                else -> error(it)
+    var hashString = type.getClass()?.run { fqNameSafe.asString() } ?: "<dynamic>"
+//    if (type !is IrSimpleType) error(type)
+    when (type) {
+        is IrSimpleType -> {
+            if (!type.arguments.isEmpty()) {
+                hashString += "<${type.arguments.map {
+                    when (it) {
+                        is IrStarProjection -> "#STAR"
+                        is IrTypeProjection -> {
+                            val variance = it.variance.label
+                            val projection = if (variance == "") "" else "${variance}_"
+                            projection + acyclicTypeMangler(visited, it.type)
+                        }
+                        else -> error(it)
+                    }
+                }.joinToString(",")}>"
             }
-        }.joinToString(",")}>"
-    }
 
-    if (type.hasQuestionMark) hashString += "?"
+            if (type.hasQuestionMark) hashString += "?"
+        }
+        !is IrDynamicType -> { error(type) }
+    }
     return hashString
 }
 
