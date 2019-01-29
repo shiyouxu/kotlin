@@ -70,8 +70,6 @@ internal class KotlinPerformanceReporter(private val perfReportFile: File) : Bui
 
     @Synchronized
     override fun buildFinished(result: BuildResult) {
-        taskOverview()
-
         val logger = result.gradle?.rootProject?.logger
         try {
             perfReportFile.writeText(taskOverview() + tasksSb.toString())
