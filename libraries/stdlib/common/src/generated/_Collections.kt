@@ -650,13 +650,14 @@ public inline fun <T> List<T>.dropLastWhile(predicate: (T) -> Boolean): List<T> 
 public inline fun <T> Iterable<T>.dropWhile(predicate: (T) -> Boolean): List<T> {
     var yielding = false
     val list = ArrayList<T>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -729,7 +730,9 @@ public fun <C : MutableCollection<in T>, T : Any> Iterable<T?>.filterNotNullTo(d
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <T, C : MutableCollection<in T>> Iterable<T>.filterNotTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -737,7 +740,9 @@ public inline fun <T, C : MutableCollection<in T>> Iterable<T>.filterNotTo(desti
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <T, C : MutableCollection<in T>> Iterable<T>.filterTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 

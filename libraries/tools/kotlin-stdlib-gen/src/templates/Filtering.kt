@@ -17,6 +17,11 @@ object Filtering : TemplateGroupBase() {
                 sequenceClassification(terminal)
             else
                 sequenceClassification(intermediate, stateless)
+
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
         }
     }
 
@@ -34,7 +39,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_drop = fn("drop(n: Int)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         val n = "\$n"
         doc { 
@@ -110,7 +115,7 @@ object Filtering : TemplateGroupBase() {
             """
         }
 
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             require(n >= 0) { "Requested element count $n is less than zero." }
             return takeLast((size - n).coerceAtLeast(0))
@@ -120,7 +125,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_take = fn("take(n: Int)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         val n = "\$n"
         doc { 
@@ -180,18 +185,15 @@ object Filtering : TemplateGroupBase() {
             """
         }
 
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             require(n >= 0) { "Requested element count $n is less than zero." }
             if (n == 0) return emptyList()
             if (n >= size) return toList()
             if (n == 1) return listOf(this[0])
-            var count = 0
             val list = ArrayList<T>(n)
-            for (item in this) {
-                if (count++ == n)
-                    break
-                list.add(item)
+            for (index in 0 until n) {
+                list.add(get(index))
             }
             return list
             """
@@ -199,7 +201,7 @@ object Filtering : TemplateGroupBase() {
     }
 
     val f_dropLast = fn("dropLast(n: Int)") {
-        include(Lists, ArraysOfObjects, ArraysOfPrimitives, CharSequences, Strings)
+        include(Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned, CharSequences, Strings)
     } builder {
         val n = "\$n"
 
@@ -229,7 +231,7 @@ object Filtering : TemplateGroupBase() {
     }
 
     val f_takeLast = fn("takeLast(n: Int)") {
-        include(Lists, ArraysOfObjects, ArraysOfPrimitives, CharSequences, Strings)
+        include(Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned, CharSequences, Strings)
     } builder {
         val n = "\$n"
         doc { 
@@ -257,7 +259,7 @@ object Filtering : TemplateGroupBase() {
             """
         }
 
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             require(n >= 0) { "Requested element count $n is less than zero." }
             if (n == 0) return emptyList()
@@ -294,7 +296,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_dropWhile = fn("dropWhile(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -305,17 +307,28 @@ object Filtering : TemplateGroupBase() {
         }
         sample("samples.collections.Collections.Transformations.drop")
         returns("List<T>")
+
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val item = get(index)
+            """
+        else
+            """
+            for (item in this) {
+            """
         body {
             """
             var yielding = false
             val list = ArrayList<T>()
-            for (item in this)
+            $iterationExpression
                 if (yielding)
                     list.add(item)
                 else if (!predicate(item)) {
                     list.add(item)
                     yielding = true
                 }
+            }
             return list
             """
         }
@@ -350,7 +363,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_takeWhile = fn("takeWhile(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -361,10 +374,20 @@ object Filtering : TemplateGroupBase() {
         }
         sample("samples.collections.Collections.Transformations.take")
         returns("List<T>")
+
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val item = get(index)
+            """
+        else
+            """
+            for (item in this) {
+            """
         body {
             """
             val list = ArrayList<T>()
-            for (item in this) {
+            $iterationExpression
                 if (!predicate(item))
                     break
                 list.add(item)
@@ -401,7 +424,7 @@ object Filtering : TemplateGroupBase() {
     }
 
     val f_dropLastWhile = fn("dropLastWhile(predicate: (T) -> Boolean)") {
-        include(Lists, ArraysOfObjects, ArraysOfPrimitives, CharSequences, Strings)
+        include(Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned, CharSequences, Strings)
     } builder {
         inline()
         doc { 
@@ -457,7 +480,7 @@ object Filtering : TemplateGroupBase() {
     }
 
     val f_takeLastWhile = fn("takeLastWhile(predicate: (T) -> Boolean)") {
-        include(Lists, ArraysOfObjects, ArraysOfPrimitives, CharSequences, Strings)
+        include(Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned, CharSequences, Strings)
     } builder {
         inline()
         doc { 
@@ -523,7 +546,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filter = fn("filter(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -550,7 +573,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filterTo = fn("filterTo(destination: C, predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -558,9 +581,20 @@ object Filtering : TemplateGroupBase() {
         typeParam("C : TCollection")
         returns("C")
 
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+            """
+        else
+            """
+            for (element in this) {
+            """
         body {
             """
-            for (element in this) if (predicate(element)) destination.add(element)
+            $iterationExpression
+                if (predicate(element)) destination.add(element)
+            }
             return destination
             """
         }
@@ -578,7 +612,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filterIndexed = fn("filterIndexed(predicate: (index: Int, T) -> Boolean)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -622,7 +656,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filterIndexedTo = fn("filterIndexedTo(destination: C, predicate: (index: Int, T) -> Boolean)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -647,7 +681,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filterNot = fn("filterNot(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences, Strings)
+        include(CharSequences, Strings, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -675,7 +709,7 @@ object Filtering : TemplateGroupBase() {
 
     val f_filterNotTo = fn("filterNotTo(destination: C, predicate: (T) -> Boolean)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -683,9 +717,20 @@ object Filtering : TemplateGroupBase() {
         typeParam("C : TCollection")
         returns("C")
 
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+            """
+        else
+            """
+            for (element in this) {
+            """
         body {
             """
-            for (element in this) if (!predicate(element)) destination.add(element)
+            $iterationExpression
+                if (!predicate(element)) destination.add(element)
+            }
             return destination
             """
         }

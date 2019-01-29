@@ -3099,13 +3099,14 @@ public inline fun CharArray.dropLastWhile(predicate: (Char) -> Boolean): List<Ch
 public inline fun <T> Array<out T>.dropWhile(predicate: (T) -> Boolean): List<T> {
     var yielding = false
     val list = ArrayList<T>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3117,13 +3118,14 @@ public inline fun <T> Array<out T>.dropWhile(predicate: (T) -> Boolean): List<T>
 public inline fun ByteArray.dropWhile(predicate: (Byte) -> Boolean): List<Byte> {
     var yielding = false
     val list = ArrayList<Byte>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3135,13 +3137,14 @@ public inline fun ByteArray.dropWhile(predicate: (Byte) -> Boolean): List<Byte> 
 public inline fun ShortArray.dropWhile(predicate: (Short) -> Boolean): List<Short> {
     var yielding = false
     val list = ArrayList<Short>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3153,13 +3156,14 @@ public inline fun ShortArray.dropWhile(predicate: (Short) -> Boolean): List<Shor
 public inline fun IntArray.dropWhile(predicate: (Int) -> Boolean): List<Int> {
     var yielding = false
     val list = ArrayList<Int>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3171,13 +3175,14 @@ public inline fun IntArray.dropWhile(predicate: (Int) -> Boolean): List<Int> {
 public inline fun LongArray.dropWhile(predicate: (Long) -> Boolean): List<Long> {
     var yielding = false
     val list = ArrayList<Long>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3189,13 +3194,14 @@ public inline fun LongArray.dropWhile(predicate: (Long) -> Boolean): List<Long> 
 public inline fun FloatArray.dropWhile(predicate: (Float) -> Boolean): List<Float> {
     var yielding = false
     val list = ArrayList<Float>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3207,13 +3213,14 @@ public inline fun FloatArray.dropWhile(predicate: (Float) -> Boolean): List<Floa
 public inline fun DoubleArray.dropWhile(predicate: (Double) -> Boolean): List<Double> {
     var yielding = false
     val list = ArrayList<Double>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3225,13 +3232,14 @@ public inline fun DoubleArray.dropWhile(predicate: (Double) -> Boolean): List<Do
 public inline fun BooleanArray.dropWhile(predicate: (Boolean) -> Boolean): List<Boolean> {
     var yielding = false
     val list = ArrayList<Boolean>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3243,13 +3251,14 @@ public inline fun BooleanArray.dropWhile(predicate: (Boolean) -> Boolean): List<
 public inline fun CharArray.dropWhile(predicate: (Char) -> Boolean): List<Char> {
     var yielding = false
     val list = ArrayList<Char>()
-    for (item in this)
+    for (item in this) {
         if (yielding)
             list.add(item)
         else if (!predicate(item)) {
             list.add(item)
             yielding = true
         }
+    }
     return list
 }
 
@@ -3602,7 +3611,9 @@ public fun <C : MutableCollection<in T>, T : Any> Array<out T?>.filterNotNullTo(
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <T, C : MutableCollection<in T>> Array<out T>.filterNotTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3610,7 +3621,9 @@ public inline fun <T, C : MutableCollection<in T>> Array<out T>.filterNotTo(dest
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Byte>> ByteArray.filterNotTo(destination: C, predicate: (Byte) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3618,7 +3631,9 @@ public inline fun <C : MutableCollection<in Byte>> ByteArray.filterNotTo(destina
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Short>> ShortArray.filterNotTo(destination: C, predicate: (Short) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3626,7 +3641,9 @@ public inline fun <C : MutableCollection<in Short>> ShortArray.filterNotTo(desti
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Int>> IntArray.filterNotTo(destination: C, predicate: (Int) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3634,7 +3651,9 @@ public inline fun <C : MutableCollection<in Int>> IntArray.filterNotTo(destinati
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Long>> LongArray.filterNotTo(destination: C, predicate: (Long) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3642,7 +3661,9 @@ public inline fun <C : MutableCollection<in Long>> LongArray.filterNotTo(destina
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Float>> FloatArray.filterNotTo(destination: C, predicate: (Float) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3650,7 +3671,9 @@ public inline fun <C : MutableCollection<in Float>> FloatArray.filterNotTo(desti
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Double>> DoubleArray.filterNotTo(destination: C, predicate: (Double) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3658,7 +3681,9 @@ public inline fun <C : MutableCollection<in Double>> DoubleArray.filterNotTo(des
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Boolean>> BooleanArray.filterNotTo(destination: C, predicate: (Boolean) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3666,7 +3691,9 @@ public inline fun <C : MutableCollection<in Boolean>> BooleanArray.filterNotTo(d
  * Appends all elements not matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Char>> CharArray.filterNotTo(destination: C, predicate: (Char) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3674,7 +3701,9 @@ public inline fun <C : MutableCollection<in Char>> CharArray.filterNotTo(destina
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <T, C : MutableCollection<in T>> Array<out T>.filterTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3682,7 +3711,9 @@ public inline fun <T, C : MutableCollection<in T>> Array<out T>.filterTo(destina
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Byte>> ByteArray.filterTo(destination: C, predicate: (Byte) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3690,7 +3721,9 @@ public inline fun <C : MutableCollection<in Byte>> ByteArray.filterTo(destinatio
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Short>> ShortArray.filterTo(destination: C, predicate: (Short) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3698,7 +3731,9 @@ public inline fun <C : MutableCollection<in Short>> ShortArray.filterTo(destinat
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Int>> IntArray.filterTo(destination: C, predicate: (Int) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3706,7 +3741,9 @@ public inline fun <C : MutableCollection<in Int>> IntArray.filterTo(destination:
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Long>> LongArray.filterTo(destination: C, predicate: (Long) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3714,7 +3751,9 @@ public inline fun <C : MutableCollection<in Long>> LongArray.filterTo(destinatio
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Float>> FloatArray.filterTo(destination: C, predicate: (Float) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3722,7 +3761,9 @@ public inline fun <C : MutableCollection<in Float>> FloatArray.filterTo(destinat
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Double>> DoubleArray.filterTo(destination: C, predicate: (Double) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3730,7 +3771,9 @@ public inline fun <C : MutableCollection<in Double>> DoubleArray.filterTo(destin
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Boolean>> BooleanArray.filterTo(destination: C, predicate: (Boolean) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -3738,7 +3781,9 @@ public inline fun <C : MutableCollection<in Boolean>> BooleanArray.filterTo(dest
  * Appends all elements matching the given [predicate] to the given [destination].
  */
 public inline fun <C : MutableCollection<in Char>> CharArray.filterTo(destination: C, predicate: (Char) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -4121,12 +4166,9 @@ public fun <T> Array<out T>.take(n: Int): List<T> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<T>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4141,12 +4183,9 @@ public fun ByteArray.take(n: Int): List<Byte> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Byte>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4161,12 +4200,9 @@ public fun ShortArray.take(n: Int): List<Short> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Short>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4181,12 +4217,9 @@ public fun IntArray.take(n: Int): List<Int> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Int>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4201,12 +4234,9 @@ public fun LongArray.take(n: Int): List<Long> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Long>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4221,12 +4251,9 @@ public fun FloatArray.take(n: Int): List<Float> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Float>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4241,12 +4268,9 @@ public fun DoubleArray.take(n: Int): List<Double> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Double>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4261,12 +4285,9 @@ public fun BooleanArray.take(n: Int): List<Boolean> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Boolean>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }
@@ -4281,12 +4302,9 @@ public fun CharArray.take(n: Int): List<Char> {
     if (n == 0) return emptyList()
     if (n >= size) return toList()
     if (n == 1) return listOf(this[0])
-    var count = 0
     val list = ArrayList<Char>(n)
-    for (item in this) {
-        if (count++ == n)
-            break
-        list.add(item)
+    for (index in 0 until n) {
+        list.add(get(index))
     }
     return list
 }

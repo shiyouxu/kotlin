@@ -2290,10 +2290,70 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun contentToString-GBYM_sE ([B)Ljava/lang/String;
 	public static final fun contentToString-QwZRm1k ([J)Ljava/lang/String;
 	public static final fun contentToString-rL5Bavg ([S)Ljava/lang/String;
+	public static final fun drop-PpDY95g ([BI)Ljava/util/List;
+	public static final fun drop-nggk6HY ([SI)Ljava/util/List;
+	public static final fun drop-qFRl0hI ([II)Ljava/util/List;
+	public static final fun drop-r7IrZao ([JI)Ljava/util/List;
+	public static final fun dropLast-PpDY95g ([BI)Ljava/util/List;
+	public static final fun dropLast-nggk6HY ([SI)Ljava/util/List;
+	public static final fun dropLast-qFRl0hI ([II)Ljava/util/List;
+	public static final fun dropLast-r7IrZao ([JI)Ljava/util/List;
+	public static final fun dropLastWhile-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropLastWhile-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropLastWhile-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropLastWhile-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropWhile-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropWhile-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropWhile-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun dropWhile-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filter-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filter-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filter-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filter-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterIndexed-ELGow60 ([BLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun filterIndexed-WyvcNBI ([ILkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun filterIndexed-s8dVfGU ([JLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun filterIndexed-xzaTVY8 ([SLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun filterIndexedTo--6EtJGI ([ILjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun filterIndexedTo-QqktQ3k ([SLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun filterIndexedTo-eNpIKz8 ([BLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun filterIndexedTo-pe2Q0Dw ([JLjava/util/Collection;Lkotlin/jvm/functions/Function2;)Ljava/util/Collection;
+	public static final fun filterNot-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterNot-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterNot-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterNot-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterNotTo-HqK1JgA ([JLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterNotTo-oEOeDjA ([SLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterNotTo-wU5IKMo ([ILjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterNotTo-wzUQCXU ([BLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterTo-HqK1JgA ([JLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterTo-oEOeDjA ([SLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterTo-wU5IKMo ([ILjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun filterTo-wzUQCXU ([BLjava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
+	public static final fun getLastIndex--ajY-9A ([I)I
+	public static final fun getLastIndex-GBYM_sE ([B)I
+	public static final fun getLastIndex-QwZRm1k ([J)I
+	public static final fun getLastIndex-rL5Bavg ([S)I
 	public static final fun random-2D5oskM ([ILkotlin/random/Random;)I
 	public static final fun random-JzugnMA ([JLkotlin/random/Random;)J
 	public static final fun random-oSF2wD8 ([BLkotlin/random/Random;)B
 	public static final fun random-s5X_as8 ([SLkotlin/random/Random;)S
+	public static final fun take-PpDY95g ([BI)Ljava/util/List;
+	public static final fun take-nggk6HY ([SI)Ljava/util/List;
+	public static final fun take-qFRl0hI ([II)Ljava/util/List;
+	public static final fun take-r7IrZao ([JI)Ljava/util/List;
+	public static final fun takeLast-PpDY95g ([BI)Ljava/util/List;
+	public static final fun takeLast-nggk6HY ([SI)Ljava/util/List;
+	public static final fun takeLast-qFRl0hI ([II)Ljava/util/List;
+	public static final fun takeLast-r7IrZao ([JI)Ljava/util/List;
+	public static final fun takeLastWhile-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeLastWhile-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeLastWhile-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeLastWhile-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeWhile-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeWhile-MShoTSo ([JLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeWhile-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun takeWhile-xTcfx_M ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun toTypedArray--ajY-9A ([I)[Lkotlin/UInt;
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;

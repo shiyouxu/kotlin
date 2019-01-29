@@ -459,7 +459,9 @@ public fun <C : MutableCollection<in T>, T : Any> Sequence<T?>.filterNotNullTo(d
  * The operation is _terminal_.
  */
 public inline fun <T, C : MutableCollection<in T>> Sequence<T>.filterNotTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (!predicate(element)) destination.add(element)
+    for (element in this) {
+        if (!predicate(element)) destination.add(element)
+    }
     return destination
 }
 
@@ -469,7 +471,9 @@ public inline fun <T, C : MutableCollection<in T>> Sequence<T>.filterNotTo(desti
  * The operation is _terminal_.
  */
 public inline fun <T, C : MutableCollection<in T>> Sequence<T>.filterTo(destination: C, predicate: (T) -> Boolean): C {
-    for (element in this) if (predicate(element)) destination.add(element)
+    for (element in this) {
+        if (predicate(element)) destination.add(element)
+    }
     return destination
 }
 
