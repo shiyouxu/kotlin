@@ -26,7 +26,6 @@ import org.jetbrains.kotlin.gradle.plugin.internal.state.TaskLoggers
 import org.jetbrains.kotlin.gradle.logging.kotlinDebug
 import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider.Companion.PERFORMANCE_REPORT_DIR_PROPERTY
 import org.jetbrains.kotlin.gradle.plugin.internal.state.TaskExecutionResults
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinCompilation
 import org.jetbrains.kotlin.gradle.report.KotlinPerformanceReporter
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 import org.jetbrains.kotlin.gradle.utils.relativeToRoot
@@ -34,7 +33,6 @@ import org.jetbrains.kotlin.utils.addToStdlib.sumByLong
 import java.io.File
 import java.lang.management.ManagementFactory
 import java.text.SimpleDateFormat
-import java.time.DateTimeException
 import java.util.*
 
 internal class KotlinGradleBuildServices private constructor(
