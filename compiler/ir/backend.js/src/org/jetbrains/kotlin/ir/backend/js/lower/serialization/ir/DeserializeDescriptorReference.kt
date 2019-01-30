@@ -15,7 +15,14 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
 
 class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val resolvedForwardDeclarations: MutableMap<UniqIdKey, UniqIdKey>) {
 
-    fun deserializeDescriptorReference(proto: IrKlibProtoBuf.DescriptorReference): DeclarationDescriptor {
+    var doCrash: Boolean = false
+
+    fun deserializeDescriptorReference(
+        proto: IrKlibProtoBuf.DescriptorReference,
+        checkerDesc: (DeclarationDescriptor) -> Long?,
+        checkerID: (Long) -> Boolean,
+        descriptorResolver: (FqName) -> DeclarationDescriptor
+    ): DeclarationDescriptor? {
         val packageFqName =
             if (proto.packageFqName == "<root>") FqName.ROOT else FqName(proto.packageFqName) // TODO: whould we store an empty string in the protobuf?
         val classFqName = FqName(proto.classFqName)
@@ -60,16 +67,25 @@ class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val r
                 .getContributedFunctions(Name.identifier(name), NoLookupLocation.FROM_BACKEND).single()
         }
 
+        if (protoIndex?.let { checkerID(it) } == true) {
+            return descriptorResolver(packageFqName.child(Name.identifier(proto.name)))
+        }
+
+        if (proto.name == "invoke") {
+            fun foo() {}
+            foo()
+        }
+
         members.forEach { member ->
             if (proto.isDefaultConstructor && member is ClassConstructorDescriptor) return member
 
             val realMembers =
                 if (proto.isFakeOverride && member is CallableMemberDescriptor && member.kind == CallableMemberDescriptor.Kind.FAKE_OVERRIDE)
-                    member.resolveFakeOverrideMaybeAbstract()
+                    member.resolveFakeOverrideMaybeAbstract().map { it.original }
                 else
                     setOf(member)
 
-            val memberIndices = realMembers.map { it.getUniqId()?.index }.filterNotNull()
+            val memberIndices = realMembers.map { it.getUniqId()?.index ?: checkerDesc(it) }.filterNotNull()
 
             if (memberIndices.contains(protoIndex)) {
                 return when {
@@ -79,6 +95,10 @@ class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val r
                 }
             }
         }
-        error("Could not find serialized descriptor for index: ${proto.uniqId.index} ${proto.packageFqName},${proto.classFqName},${proto.name}")
+
+        if (doCrash) {
+            error("Could not find serialized descriptor for index: ${proto.uniqId.index} ${proto.packageFqName},${proto.classFqName},${proto.name}")
+        }
+        return null
     }
 }

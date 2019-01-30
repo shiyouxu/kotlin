@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.backend.common.LoggingContext
 import org.jetbrains.kotlin.backend.common.descriptors.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.impl.EmptyPackageFragmentDescriptor
+import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.metadata.JsKlibMetadataSerializerProtocol
 import org.jetbrains.kotlin.ir.declarations.*
@@ -20,6 +21,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.SymbolTable
 import org.jetbrains.kotlin.ir.util.patchDeclarationParents
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedCallableMemberDescriptor
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedClassDescriptor
@@ -35,6 +37,7 @@ class IrKlibProtoBufModuleDeserializer(
         : IrModuleDeserializer(logger, builtIns, symbolTable) {
 
     val deserializedSymbols = mutableMapOf<UniqIdKey, IrSymbol>()
+    val knownBuiltInsDescriptors = mutableMapOf<DeclarationDescriptor, UniqId>()
     val reachableTopLevels = mutableSetOf<UniqIdKey>()
     val deserializedTopLevels = mutableSetOf<UniqIdKey>()
     val forwardDeclarations = mutableSetOf<IrSymbol>()
@@ -49,6 +52,9 @@ class IrKlibProtoBufModuleDeserializer(
     val moduleRoot = libraryDir
     val irDirectory = File(libraryDir, "ir/")
 
+
+    private val FUNCTION_INDEX_START: Long
+
     init {
         var currentIndex = 0x1_0000_0000L
         builtIns.knownBuiltins.forEach {
@@ -57,6 +63,21 @@ class IrKlibProtoBufModuleDeserializer(
             assert(symbolTable.referenceSimpleFunction(it.descriptor) == it.symbol)
             currentIndex++
         }
+
+        FUNCTION_INDEX_START = currentIndex
+
+//        val invokeName = Name.identifier("invoke")
+//        (0..255).forEach {
+//            symbolTable.referenceSimpleFunction(
+//                builtIns.builtIns.getFunction(it).unsubstitutedMemberScope.getContributedFunctions(
+//                    invokeName, NoLookupLocation.FROM_DESERIALIZATION
+//                ).single()
+//            ).let { d ->
+//                val id = UniqIdKey(null, UniqId(currentIndex++, isLocal = false))
+//                deserializedSymbols[id] = d
+//                knownBuiltInsDescriptors[d.descriptor] = id.uniqId
+//            }
+//        }
     }
 
     private fun referenceDeserializedSymbol(proto: IrKlibProtoBuf.IrSymbolData, descriptor: DeclarationDescriptor?): IrSymbol = when (proto.kind) {
@@ -157,8 +178,12 @@ class IrKlibProtoBufModuleDeserializer(
         return symbol
     }
 
-    override fun deserializeDescriptorReference(proto: IrKlibProtoBuf.DescriptorReference)
-        = descriptorReferenceDeserializer.deserializeDescriptorReference(proto)
+    override fun deserializeDescriptorReference(proto: IrKlibProtoBuf.DescriptorReference) =
+        descriptorReferenceDeserializer.deserializeDescriptorReference(proto, {
+            knownBuiltInsDescriptors[it]?.index ?: if (isBuiltInFunction(it)) FUNCTION_INDEX_START + builtInFunctionId(it) else null
+        }, { (FUNCTION_INDEX_START + 256 * 2) <= it && it < (FUNCTION_INDEX_START + 256 * 4) }, {
+            builtIns.builtIns.getBuiltInClassByFqName(it)
+        })
 
     private val ByteArray.codedInputStream: org.jetbrains.kotlin.protobuf.CodedInputStream
         get() {
@@ -179,7 +204,7 @@ class IrKlibProtoBufModuleDeserializer(
 
     private fun loadTopLevelDeclarationProto(uniqIdKey: UniqIdKey): IrKlibProtoBuf.IrDeclaration {
         val file = File(irDirectory, uniqIdKey.uniqId.declarationFileName)
-        return IrKlibProtoBuf.IrDeclaration.parseFrom(file.readBytes(), JsKlibMetadataSerializerProtocol.extensionRegistry)
+        return IrKlibProtoBuf.IrDeclaration.parseFrom(file.readBytes().codedInputStream, JsKlibMetadataSerializerProtocol.extensionRegistry)
     }
 
     private fun findDeserializedDeclarationForDescriptor(descriptor: DeclarationDescriptor): DeclarationDescriptor? {
@@ -274,7 +299,6 @@ class IrKlibProtoBufModuleDeserializer(
 
             }
             file.declarations.addAll(declarations)
-            file
         }
     }
 
@@ -307,9 +331,12 @@ class IrKlibProtoBufModuleDeserializer(
         deserializedModuleProtoSymbolTables.put(moduleDescriptor, proto.symbolTable)
         deserializedModuleProtoTypeTables.put(moduleDescriptor, proto.typeTable)
 
+        var i = 0
         val files = proto.fileList.map {
+            i++
+//            if (i >= 41)
+//                descriptorReferenceDeserializer.doCrash = true
             deserializeIrFile(it, moduleDescriptor, deserializeAllDeclarations)
-
         }
         val module = IrModuleFragmentImpl(moduleDescriptor, builtIns, files)
         module.patchDeclarationParents(null)

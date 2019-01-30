@@ -5,10 +5,17 @@
 
 package org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir
 
+import org.jetbrains.kotlin.backend.common.descriptors.getFunction
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrAnonymousInitializerImpl
 import org.jetbrains.kotlin.ir.descriptors.IrBuiltIns
+import org.jetbrains.kotlin.ir.util.SymbolTable
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.jvm.modules.KOTLIN_STDLIB_MODULE_NAME
+import java.util.regex.Pattern
 
 fun <K, V> MutableMap<K, V>.putOnce(k:K, v: V): Unit {
     assert(!this.containsKey(k) || this[k] == v) {
@@ -26,23 +33,46 @@ class DescriptorTable {
 }
 
 // TODO: We don't manage id clashes anyhow now.
-class DeclarationTable(val builtIns: IrBuiltIns, val descriptorTable: DescriptorTable) {
+class DeclarationTable(val builtIns: IrBuiltIns, val descriptorTable: DescriptorTable, val symbolTable: SymbolTable) {
 
     private val table = mutableMapOf<IrDeclaration, UniqId>()
     val debugIndex = mutableMapOf<UniqId, String>()
     val descriptors = descriptorTable
-    private var currentIndex = 0L
+    private var currentIndex = 0x1_0000_0000L
+
+    private val FUNCTION_BUILT_IN = 2 * 256 + 2 * 256
+    private val FUNCTION_INDEX_START: Long
 
     init {
-        builtIns.knownBuiltins.forEach {
-            table.put(it, UniqId(currentIndex ++, false))
+        val known = builtIns.knownBuiltins
+        known.forEach {
+            table.put(it, UniqId(currentIndex++, false))
         }
+
+        FUNCTION_INDEX_START = currentIndex
+        currentIndex += FUNCTION_BUILT_IN
+//
+//        val invokeName = Name.identifier("invoke")
+//        (0..255).forEach {
+//            symbolTable.referenceSimpleFunction(
+//                builtIns.builtIns.getFunction(it).unsubstitutedMemberScope.getContributedFunctions(
+//                    invokeName, NoLookupLocation.FROM_DESERIALIZATION
+//                ).single()
+//            ).let { d ->
+//                if (d.isBound) {
+//                    table[d.owner] = UniqId(currentIndex, false)
+//                }
+//                ++currentIndex
+//            }
+//        }
     }
 
     fun uniqIdByDeclaration(value: IrDeclaration): UniqId {
         val index = table.getOrPut(value) {
 
-            if (value.origin == IrDeclarationOrigin.FAKE_OVERRIDE ||
+            if (isBuiltInFunction(value)) {
+                UniqId(FUNCTION_INDEX_START + builtInFunctionId(value), false)
+            } else if (value.origin == IrDeclarationOrigin.FAKE_OVERRIDE ||
                 !value.isExported()
                     || value is IrVariable
                     || value is IrTypeParameter

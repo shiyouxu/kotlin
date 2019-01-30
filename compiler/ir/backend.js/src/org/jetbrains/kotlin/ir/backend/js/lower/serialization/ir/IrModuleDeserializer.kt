@@ -49,7 +49,7 @@ abstract class IrModuleDeserializer(
 
     abstract fun deserializeIrSymbol(proto: IrKlibProtoBuf.IrSymbol): IrSymbol
     abstract fun deserializeIrType(proto: IrKlibProtoBuf.IrTypeIndex): IrType
-    abstract fun deserializeDescriptorReference(proto: IrKlibProtoBuf.DescriptorReference): DeclarationDescriptor
+    abstract fun deserializeDescriptorReference(proto: IrKlibProtoBuf.DescriptorReference): DeclarationDescriptor?
 
     private fun deserializeTypeArguments(proto: IrKlibProtoBuf.TypeArguments): List<IrType> {
         logger.log { "### deserializeTypeArguments" }

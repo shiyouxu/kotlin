@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import org.jetbrains.kotlin.backend.common.CompilerPhaseManager
+import org.jetbrains.kotlin.backend.common.LoggingContext
 import org.jetbrains.kotlin.backend.common.output.OutputFile
 import org.jetbrains.kotlin.backend.common.output.OutputFileCollection
 import org.jetbrains.kotlin.backend.common.output.SimpleOutputBinaryFile
@@ -76,18 +77,13 @@ fun compile(
 
     val moduleFragment = psi2IrTranslator.generateModuleFragment(psi2IrContext, files)
 
-    val context = JsIrBackendContext(
-        analysisResult.moduleDescriptor,
-        psi2IrContext.irBuiltIns,
-        psi2IrContext.symbolTable,
-        moduleFragment,
-        configuration,
-        irDependencyModules
-    )
-
     if (isKlibCompilation) {
-        val declarationTable = DeclarationTable(moduleFragment.irBuiltins, DescriptorTable())
-        val serializedIr = IrModuleSerializer(context, declarationTable/*, onlyForInlines = false*/).serializedIrModule(moduleFragment)
+        val logggg = object : LoggingContext {
+            override fun log(message: () -> String) {}
+        }
+
+        val declarationTable = DeclarationTable(moduleFragment.irBuiltins, DescriptorTable(), psi2IrContext.symbolTable)
+        val serializedIr = IrModuleSerializer(logggg, declarationTable/*, onlyForInlines = false*/).serializedIrModule(moduleFragment)
 //        val serializer = KonanSerializationUtil(context, configuration.get(CommonConfigurationKeys.METADATA_VERSION)!!, declarationTable)
 //        val serializedData = serializer.serializeModule(analysisResult.moduleDescriptor, serializedIr)
 //        buildLibrary(serializedData)
@@ -168,22 +164,47 @@ fun compile(
             it.constantValueGenerator = ConstantValueGenerator(md, st)
         }
 
+        val irBuiltIns = IrBuiltIns(md.builtIns, typeTranslator, st)
+
         val deserializer = IrKlibProtoBufModuleDeserializer(
             md,
-            context,
-            IrBuiltIns(md.builtIns, typeTranslator, st),
+            logggg,
+            irBuiltIns,
             stdKlibDir,
             st,
             null
         )
         val deserializedModuleFragment = deserializer.deserializeIrModule(md, moduleFile.readBytes(), true)
 
-        TODO("Implemenet IrSerialization")
-    }
+        val context = JsIrBackendContext(
+            md,
+            irBuiltIns,
+            st,
+            deserializedModuleFragment,
+            configuration,
+            irDependencyModules
+        )
 
-    CompilerPhaseManager(context, context.phases, moduleFragment, JsPhaseRunner).run {
-        jsPhases.fold(data) { m, p -> phase(p, context, m) }
-    }
+        CompilerPhaseManager(context, context.phases, deserializedModuleFragment, JsPhaseRunner).run {
+            jsPhases.fold(data) { m, p -> phase(p, context, m) }
+        }
 
-    return Result(analysisResult.moduleDescriptor, context.jsProgram.toString(), context.moduleFragmentCopy)
+        return Result(md, context.jsProgram.toString(), context.moduleFragmentCopy)
+    } else {
+
+        val context = JsIrBackendContext(
+            analysisResult.moduleDescriptor,
+            psi2IrContext.irBuiltIns,
+            psi2IrContext.symbolTable,
+            moduleFragment,
+            configuration,
+            irDependencyModules
+        )
+
+        CompilerPhaseManager(context, context.phases, moduleFragment, JsPhaseRunner).run {
+            jsPhases.fold(data) { m, p -> phase(p, context, m) }
+        }
+
+        return Result(analysisResult.moduleDescriptor, context.jsProgram.toString(), context.moduleFragmentCopy)
+    }
 }
