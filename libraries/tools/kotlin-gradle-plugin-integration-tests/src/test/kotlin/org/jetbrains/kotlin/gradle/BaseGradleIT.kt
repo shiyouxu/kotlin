@@ -451,6 +451,16 @@ abstract class BaseGradleIT {
         }
     }
 
+    fun CompiledProject.assertTasksFailed(vararg tasks: String) {
+        assertTasksFailed(tasks.toList())
+    }
+
+    fun CompiledProject.assertTasksFailed(tasks: Iterable<String>) {
+        for (task in tasks) {
+            assertContains("$task FAILED")
+        }
+    }
+
     fun CompiledProject.assertTasksUpToDate(vararg tasks: String) {
         assertTasksUpToDate(tasks.toList())
     }
@@ -599,7 +609,7 @@ abstract class BaseGradleIT {
 
             // Workaround: override a console type set in the user machine gradle.properties (since Gradle 4.3):
             add("--console=plain")
-
+            add("-Dkotlin.daemon.ea=true")
             addAll(options.freeCommandLineArgs)
         }
 

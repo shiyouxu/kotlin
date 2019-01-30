@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.patchDeclarationParents
-import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
 private fun FileLoweringPass.lower(moduleFragment: IrModuleFragment) = moduleFragment.files.forEach { lower(it) }
 
@@ -43,10 +42,10 @@ private fun makeJsPhase(
     prerequisite: Set<CompilerPhase<JsIrBackendContext, IrModuleFragment>> = emptySet()
 ) = makePhase(lowering, description, name, prerequisite)
 
-private val MoveExternalDeclarationsToSeparatePlacePhase = makeJsPhase(
-    { _, module -> MoveExternalDeclarationsToSeparatePlace().lower(module) },
-    name = "MoveExternalDeclarationsToSeparatePlace",
-    description = "Move `external` declarations into separate place to make the following lowerings do not care about them"
+private val MoveBodilessDeclarationsToSeparatePlacePhase = makeJsPhase(
+    { _, module -> MoveBodilessDeclarationsToSeparatePlace().lower(module) },
+    name = "MoveBodilessDeclarationsToSeparatePlace",
+    description = "Move `external` and `built-in` declarations into separate place to make the following lowerings do not care about them"
 )
 
 private val ExpectDeclarationsRemovingPhase = makeJsPhase(
@@ -337,7 +336,7 @@ private val IrToJsPhase = makeJsPhase(
 
 val jsPhases = listOf(
     IrModuleStartPhase,
-    MoveExternalDeclarationsToSeparatePlacePhase,
+    MoveBodilessDeclarationsToSeparatePlacePhase,
     ExpectDeclarationsRemovingPhase,
     CoroutineIntrinsicLoweringPhase,
     ArrayInlineConstructorLoweringPhase,
@@ -371,10 +370,10 @@ val jsPhases = listOf(
     TypeOperatorLoweringPhase,
     SecondaryConstructorLoweringPhase,
     SecondaryFactoryInjectorLoweringPhase,
+    ClassReferenceLoweringPhase,
     InlineClassLoweringPhase,
     AutoboxingTransformerPhase,
     BlockDecomposerLoweringPhase,
-    ClassReferenceLoweringPhase,
     PrimitiveCompanionLoweringPhase,
     ConstLoweringPhase,
     CallsLoweringPhase,
