@@ -2160,6 +2160,11 @@ public class LocalInspectionTestGenerated extends AbstractLocalInspectionTest {
                 runTest("idea/testData/inspectionsLocal/coroutines/deferredIsResult/complex.kt");
             }
 
+            @TestMetadata("lambda.kt")
+            public void testLambda() throws Exception {
+                runTest("idea/testData/inspectionsLocal/coroutines/deferredIsResult/lambda.kt");
+            }
+
             @TestMetadata("rename.kt")
             public void testRename() throws Exception {
                 runTest("idea/testData/inspectionsLocal/coroutines/deferredIsResult/rename.kt");
@@ -4974,6 +4979,21 @@ public class LocalInspectionTestGenerated extends AbstractLocalInspectionTest {
         @TestMetadata("simple.kt")
         public void testSimple() throws Exception {
             runTest("idea/testData/inspectionsLocal/redundantLambdaArrow/simple.kt");
+        }
+
+        @TestMetadata("typeParameter.kt")
+        public void testTypeParameter() throws Exception {
+            runTest("idea/testData/inspectionsLocal/redundantLambdaArrow/typeParameter.kt");
+        }
+
+        @TestMetadata("typeParameter2.kt")
+        public void testTypeParameter2() throws Exception {
+            runTest("idea/testData/inspectionsLocal/redundantLambdaArrow/typeParameter2.kt");
+        }
+
+        @TestMetadata("typeParameter3.kt")
+        public void testTypeParameter3() throws Exception {
+            runTest("idea/testData/inspectionsLocal/redundantLambdaArrow/typeParameter3.kt");
         }
 
         @TestMetadata("underscore.kt")
