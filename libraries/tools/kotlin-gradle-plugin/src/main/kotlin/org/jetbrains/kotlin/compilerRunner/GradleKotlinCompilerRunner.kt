@@ -140,7 +140,7 @@ internal open class GradleCompilerRunner(protected val task: Task) {
             incrementalCompilationEnvironment = incrementalCompilationEnvironment,
             incrementalModuleInfo = modulesInfo,
             buildFile = buildFile,
-            localStateDirectories = environment.localStateDirectories,
+            outputFiles = environment.outputFiles.toList(),
             taskPath = task.path
         )
         TaskLoggers.put(task.path, task.logger)
@@ -159,13 +159,19 @@ internal open class GradleCompilerRunner(protected val task: Task) {
             sessionIsAliveFlagFile: File,
             compilerFullClasspath: List<File>,
             messageCollector: MessageCollector,
-            isDebugEnabled: Boolean
+            isDebugEnabled: Boolean,
+            enableAssertions: Boolean
         ): CompileServiceSession? {
             val compilerId = CompilerId.makeCompilerId(compilerFullClasspath)
+            val additionalJvmParams = arrayListOf<String>()
+            if (enableAssertions) {
+                additionalJvmParams.add("ea")
+            }
             return KotlinCompilerRunnerUtils.newDaemonConnection(
                 compilerId, clientIsAliveFlagFile, sessionIsAliveFlagFile,
                 messageCollector = messageCollector,
-                isDebugEnabled = isDebugEnabled
+                isDebugEnabled = isDebugEnabled,
+                additionalJvmParams = additionalJvmParams.toTypedArray()
             )
         }
 
