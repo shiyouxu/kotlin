@@ -15,14 +15,14 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
 
 class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val resolvedForwardDeclarations: MutableMap<UniqIdKey, UniqIdKey>) {
 
-    var doCrash: Boolean = false
+    var doCrash: Boolean = true
 
     fun deserializeDescriptorReference(
         proto: IrKlibProtoBuf.DescriptorReference,
         checkerDesc: (DeclarationDescriptor) -> Long?,
         checkerID: (Long) -> Boolean,
         descriptorResolver: (FqName) -> DeclarationDescriptor
-    ): DeclarationDescriptor? {
+    ): DeclarationDescriptor {
         val packageFqName =
             if (proto.packageFqName == "<root>") FqName.ROOT else FqName(proto.packageFqName) // TODO: whould we store an empty string in the protobuf?
         val classFqName = FqName(proto.classFqName)
@@ -71,11 +71,6 @@ class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val r
             return descriptorResolver(packageFqName.child(Name.identifier(proto.name)))
         }
 
-        if (proto.name == "invoke") {
-            fun foo() {}
-            foo()
-        }
-
         members.forEach { member ->
             if (proto.isDefaultConstructor && member is ClassConstructorDescriptor) return member
 
@@ -96,9 +91,6 @@ class DescriptorReferenceDeserializer(val currentModule: ModuleDescriptor, val r
             }
         }
 
-        if (doCrash) {
-            error("Could not find serialized descriptor for index: ${proto.uniqId.index} ${proto.packageFqName},${proto.classFqName},${proto.name}")
-        }
-        return null
+        error("Could not find serialized descriptor for index: ${proto.uniqId.index} ${proto.packageFqName},${proto.classFqName},${proto.name}")
     }
 }

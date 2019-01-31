@@ -65,19 +65,6 @@ class IrKlibProtoBufModuleDeserializer(
         }
 
         FUNCTION_INDEX_START = currentIndex
-
-//        val invokeName = Name.identifier("invoke")
-//        (0..255).forEach {
-//            symbolTable.referenceSimpleFunction(
-//                builtIns.builtIns.getFunction(it).unsubstitutedMemberScope.getContributedFunctions(
-//                    invokeName, NoLookupLocation.FROM_DESERIALIZATION
-//                ).single()
-//            ).let { d ->
-//                val id = UniqIdKey(null, UniqId(currentIndex++, isLocal = false))
-//                deserializedSymbols[id] = d
-//                knownBuiltInsDescriptors[d.descriptor] = id.uniqId
-//            }
-//        }
     }
 
     private fun referenceDeserializedSymbol(proto: IrKlibProtoBuf.IrSymbolData, descriptor: DeclarationDescriptor?): IrSymbol = when (proto.kind) {

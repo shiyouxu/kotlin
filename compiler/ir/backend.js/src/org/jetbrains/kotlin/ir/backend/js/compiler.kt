@@ -14,12 +14,15 @@ import org.jetbrains.kotlin.backend.common.output.OutputFile
 import org.jetbrains.kotlin.backend.common.output.OutputFileCollection
 import org.jetbrains.kotlin.backend.common.output.SimpleOutputBinaryFile
 import org.jetbrains.kotlin.backend.common.output.SimpleOutputFileCollection
+import org.jetbrains.kotlin.builtins.functions.functionInterfacePackageFragmentProvider
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+import org.jetbrains.kotlin.descriptors.impl.CompositePackageFragmentProvider
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.incremental.components.LookupTracker
+import org.jetbrains.kotlin.ir.backend.js.lower.inline.replaceUnboundSymbols
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.*
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.metadata.*
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
@@ -70,7 +73,7 @@ fun compile(
     TopDownAnalyzerFacadeForJS.checkForErrors(files, analysisResult.bindingContext)
 
     val symbolTable = SymbolTable()
-    irDependencyModules.forEach { symbolTable.loadModule(it) }
+//    irDependencyModules.forEach { symbolTable.loadModule(it) }
 
     val psi2IrTranslator = Psi2IrTranslator(configuration.languageVersionSettings)
     val psi2IrContext = psi2IrTranslator.createGeneratorContext(analysisResult.moduleDescriptor, analysisResult.bindingContext, symbolTable)
@@ -146,17 +149,19 @@ fun compile(
 
         val lookupTracker = configuration.get(CommonConfigurationKeys.LOOKUP_TRACKER, LookupTracker.DO_NOTHING)
         val parts = serializer.readModuleAsProto(metadata.readBytes())
-        val md = ModuleDescriptorImpl(
-            Name.special("<$moduleName>"), storageManager, JsPlatform.builtIns
-        )
-        val provider = createJsKlibMetadataPackageFragmentProvider(
+        val builtIns = analysisResult.moduleDescriptor.builtIns
+        val md = ModuleDescriptorImpl(Name.special("<$moduleName>"), storageManager, builtIns)
+//        builtIns.builtInsModule = md
+        val packageProviders = listOf(functionInterfacePackageFragmentProvider(storageManager, md),
+        createJsKlibMetadataPackageFragmentProvider(
             storageManager, md, parts.header, parts.body, metadataVersion,
             CompilerDeserializationConfiguration(configuration.languageVersionSettings),
             lookupTracker
-        )
+        ))
 
-        md.initialize(provider)
-        md.setDependencies(listOf(md, md.builtIns.builtInsModule))
+        md.initialize(CompositePackageFragmentProvider(packageProviders))
+        md.setDependencies(listOf(md/*, builtIns.builtInsModule*/))
+
 
         val st = SymbolTable()
 
@@ -184,6 +189,7 @@ fun compile(
             configuration,
             irDependencyModules
         )
+        deserializedModuleFragment.replaceUnboundSymbols(context)
 
         CompilerPhaseManager(context, context.phases, deserializedModuleFragment, JsPhaseRunner).run {
             jsPhases.fold(data) { m, p -> phase(p, context, m) }

@@ -24,13 +24,15 @@ fun createJsKlibMetadataPackageFragmentProvider(
     packageFragmentProtos: List<ProtoBuf.PackageFragment>,
     metadataVersion: JsKlibMetadataVersion,
     configuration: DeserializationConfiguration,
-    lookupTracker: LookupTracker
+    lookupTracker: LookupTracker,
+    additionalPackageFragments: List<PackageFragmentDescriptor> = emptyList()
 ): PackageFragmentProvider {
     val packageFragments: MutableList<PackageFragmentDescriptor> = packageFragmentProtos.mapNotNullTo(mutableListOf()) { proto ->
         proto.fqName?.let { fqName ->
             JsKlibMetadataPackageFragment(fqName, storageManager, module, proto, header, metadataVersion, configuration)
         }
     }
+    packageFragments += additionalPackageFragments
 
     // Generate empty PackageFragmentDescriptor instances for packages that aren't mentioned in compilation units directly.
     // For example, if there's `package foo.bar` directive, we'll get only PackageFragmentDescriptor for `foo.bar`, but
@@ -64,7 +66,7 @@ fun createJsKlibMetadataPackageFragmentProvider(
         emptyList(),
         notFoundClasses,
         ContractDeserializerImpl(configuration, storageManager),
-        platformDependentDeclarationFilter = PlatformDependentDeclarationFilter.NoPlatformDependent,
+        platformDependentDeclarationFilter = PlatformDependentDeclarationFilter.All,
         extensionRegistryLite = JsKlibMetadataSerializerProtocol.extensionRegistry
     )
 

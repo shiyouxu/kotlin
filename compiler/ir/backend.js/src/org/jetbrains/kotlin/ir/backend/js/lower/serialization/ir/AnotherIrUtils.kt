@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.DescriptorUtils
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
 import java.io.File
 import java.util.regex.Pattern
@@ -31,7 +30,8 @@ internal val IrDeclaration.isLocal get() = DescriptorUtils.isLocal(this.descript
 internal val IrDeclaration.module get() = this.descriptor.module
 
 @Deprecated("Do not call this method in the compiler front-end.")
-internal val IrField.isDelegate get() = @Suppress("DEPRECATION") this.descriptor.isDelegated
+internal val IrField.isDelegate
+    get() = @Suppress("DEPRECATION") this.descriptor.isDelegated
 
 internal const val SYNTHETIC_OFFSET = -2
 
@@ -95,16 +95,22 @@ class NaiveSourceBasedFileEntryImpl(override val name: String) : SourceManager.F
 }
 
 
-val functionPattern = Pattern.compile("^(Suspend)?Function\\d+$")
+private val functionPattern = Pattern.compile("^K?(Suspend)?Function\\d+$")
 
-internal fun isBuiltInFunction(value: IrDeclaration):Boolean = when (value) {
+private val kotlinFqn = FqName("kotlin")
+
+private val functionalPackages =
+    listOf(kotlinFqn, kotlinFqn.child(Name.identifier("coroutines")), kotlinFqn.child(Name.identifier("reflect")))
+
+internal fun isBuiltInFunction(value: IrDeclaration): Boolean = when (value) {
     is IrSimpleFunction -> value.name.asString() == "invoke" && (value.parent as? IrClass)?.let { isBuiltInFunction(it) } == true
     is IrClass -> {
         val fqn = value.parent.fqNameSafe
-        fqn == FqName("kotlin") && value.name.asString().let { functionPattern.matcher(it).find() }
+        functionalPackages.any { it == fqn } && value.name.asString().let { functionPattern.matcher(it).find() }
     }
     else -> false
 }
+
 
 internal fun builtInFunctionId(value: IrDeclaration): Long = when (value) {
     is IrSimpleFunction -> {
@@ -116,11 +122,12 @@ internal fun builtInFunctionId(value: IrDeclaration): Long = when (value) {
     else -> error("Only class or function is expected")
 }
 
-internal fun isBuiltInFunction(value: DeclarationDescriptor):Boolean = when (value) {
+
+internal fun isBuiltInFunction(value: DeclarationDescriptor): Boolean = when (value) {
     is FunctionInvokeDescriptor -> isBuiltInFunction(value.containingDeclaration)
     is ClassDescriptor -> {
         val fqn = (value.containingDeclaration as? PackageFragmentDescriptor)?.fqName
-        fqn == FqName("kotlin") && value.name.asString().let { functionPattern.matcher(it).find() }
+        functionalPackages.any { it == fqn } && value.name.asString().let { functionPattern.matcher(it).find() }
     }
     else -> false
 }
