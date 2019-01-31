@@ -87,6 +87,10 @@ object ServiceLoaderLite {
     }
 
     private fun findImplementationsInJar(classId: String, file: File): Set<String> {
+        if (file.extension != "jar") {
+            return emptySet()
+        }
+
         ZipFile(file).use { zipFile ->
             val entry = zipFile.getEntry(SERVICE_DIRECTORY_LOCATION + classId) ?: return emptySet()
             zipFile.getInputStream(entry).use { inputStream ->
